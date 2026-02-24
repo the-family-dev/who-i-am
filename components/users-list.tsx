@@ -1,7 +1,8 @@
+"use client";
 import { observer } from "mobx-react-lite";
 import { TUser } from "../server/types";
 import { CrownIcon } from "lucide-react";
-import { Avatar, Description, Label, ListBox } from "@heroui/react";
+import { Avatar } from "@heroui/react";
 
 export const UsersList = observer<{ users: TUser[] }>((props) => {
   const { users } = props;

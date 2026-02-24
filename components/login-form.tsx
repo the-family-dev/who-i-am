@@ -5,7 +5,6 @@ import {
   Button,
   Form,
   Input,
-  InputOTP,
   Label,
   Surface,
   Tabs,
@@ -14,7 +13,8 @@ import {
 import { LoginType, store } from "@/store/store";
 
 export const LoginForm = observer(() => {
-  const { userName, roomCode, type } = store.loginForm;
+  const { userName, loginForm } = store;
+  const { roomCode, type } = loginForm;
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,7 +32,7 @@ export const LoginForm = observer(() => {
       variant="transparent"
       className="w-120 rounded-3xl border p-6 flex flex-col gap-4"
     >
-      <div className="text-3xl font-bold text-center pb-4">Нуар</div>
+      <div className="text-3xl font-bold text-center pb-4">Кто я</div>
       <Tabs
         onSelectionChange={(key) =>
           store.setLoginFormField("type", key as LoginType)
@@ -48,37 +48,25 @@ export const LoginForm = observer(() => {
         </Tabs.ListContainer>
       </Tabs>
       <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
-        <TextField variant="secondary" name="name" type="text">
-          <Label>Имя</Label>
-          <Input
-            value={userName}
-            onChange={(e) =>
-              store.setLoginFormField("userName", e.target.value)
-            }
-            placeholder="Имя пользователя"
-            variant="secondary"
-          />
-        </TextField>
         {type === LoginType.Join ? (
-          <div className="flex flex-col gap-2">
+          <TextField variant="secondary" name="name" type="text">
             <Label>Код комнаты</Label>
-            <InputOTP
-              className="self-center"
-              maxLength={4}
+            <Input
               value={roomCode}
-              onChange={(value) => store.setLoginFormField("roomCode", value)}
-            >
-              <InputOTP.Group>
-                <InputOTP.Slot index={0} />
-                <InputOTP.Slot index={1} />
-                <InputOTP.Slot index={2} />
-                <InputOTP.Slot index={3} />
-              </InputOTP.Group>
-            </InputOTP>
-          </div>
+              onChange={(e) =>
+                store.setLoginFormField("roomCode", e.target.value)
+              }
+              placeholder="Код комнаты"
+              variant="secondary"
+            />
+          </TextField>
         ) : null}
-        <Button className={"w-full"} type="submit">
-          {type === LoginType.Join ? "Присоедениться" : "Создать"}
+        <Button
+          isDisabled={userName === undefined}
+          className={"w-full"}
+          type="submit"
+        >
+          {type === LoginType.Join ? "Присоединиться" : "Создать"}
         </Button>
       </Form>
     </Surface>

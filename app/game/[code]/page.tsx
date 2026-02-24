@@ -1,30 +1,43 @@
 "use client";
+import Link from "next/link";
 import { Chat } from "@/components/chat";
 import { observer } from "mobx-react-lite";
 import { useParams } from "next/navigation";
-import { useLayoutEffect } from "react";
-import { store } from "../../../store/store";
+import { store } from "@/store/store";
+import { UsersList } from "@/components/users-list";
+import { useEffect } from "react";
 
 export default observer(function Game() {
-  const { user } = store;
+  const { userName, room } = store;
 
-  const { code } = useParams<{
-    code?: string;
-  }>();
+  const { code } = useParams<{ code?: string }>();
 
-  useLayoutEffect(() => {}, []);
+  useEffect(() => {
+    store.loginToRoom(code);
+  }, []);
 
-  if (user === undefined) {
+  if (userName === undefined) {
     return (
-      <div>
-        <p>Unauthorised</p>
+      <div className="flex flex-col ga-2">
+        Нет имени
+        <Link href={"/register"}>Ввести имя</Link>
+      </div>
+    );
+  }
+
+  if (room === undefined) {
+    return (
+      <div className="flex flex-col ga-2">
+        Комната не найдена
+        <Link href={"/register"}>Ввести имя</Link>
       </div>
     );
   }
 
   return (
-    <div>
-      room page {code}
+    <div className="flex flex-row gap-4 h-full">
+      <UsersList users={room.users} />
+      <div>{room.roomCode}</div>
       <Chat />
     </div>
   );

@@ -17,7 +17,7 @@ export const Chat = observer(() => {
   return (
     <Surface
       variant="transparent"
-      className="rounded border p-4 flex flex-col gap-4 w-75 h-full"
+      className="rounded border p-4 flex flex-col gap-4 w-75 shrink-0 h-full"
     >
       <div>Чат</div>
       <ScrollShadow className="h-full" hideScrollBar>

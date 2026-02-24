@@ -1,17 +1,33 @@
 "use client";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { SocketEvents } from "@/server/types";
 import { socket } from "@/lib/socket";
 import { store } from "../store/store";
+import { useRouter } from "next/navigation";
+import { toast } from "@heroui/react";
 
 export const SocketEventsHandler = observer(function SocketEventsHandler() {
   console.log("socket handler rendered");
+
+  const router = useRouter();
+
+  useLayoutEffect(() => {
+    store.setRouter(router);
+
+    store.requestStoredName();
+  }, []);
+
   useEffect(() => {
     socket.on(SocketEvents.RoomCreated, (room) => {
       console.log(SocketEvents.RoomCreated, room);
 
       store.setRoom(room);
+      router.push(`/game/${room.roomCode}`);
+    });
+
+    socket.on(SocketEvents.RoomNotFound, (code) => {
+      toast.danger(`Комната ${code} не найдена`);
     });
 
     socket.on(SocketEvents.ReciveMessage, (message) => {
@@ -27,6 +43,8 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
       console.log(SocketEvents.UserJoined, room);
 
       store.setRoom(room);
+
+      router.push(`/game/${room.roomCode}`);
     });
 
     return () => {

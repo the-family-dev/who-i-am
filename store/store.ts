@@ -4,6 +4,7 @@ import { SocketEvents, TMessage, TRoom, TUser } from "@/server/types";
 import { socket } from "@/lib/socket";
 import { TypedStorage } from "../utils/storage";
 import { useRouter } from "next/navigation";
+import { toast } from "@heroui/react";
 
 export enum LoginType {
   Join = "join",
@@ -11,7 +12,6 @@ export enum LoginType {
 }
 
 type TLoginForm = {
-  userName: string;
   roomCode: string;
   type: LoginType;
 };
@@ -47,12 +47,21 @@ class Store {
     makeAutoObservable(this);
   }
 
-  public getStoredName() {
-    this.userName = this._nameStorage.get();
+  public requestStoredName() {
+    const name = this._nameStorage.get();
+
+    if (name === undefined) {
+      this.router?.push("/register");
+    }
+
+    this.userName = name;
+    console.log("requestStoredName");
   }
 
   public register() {
     this._nameStorage.set(this.userName);
+
+    this.router?.push("/");
   }
 
   public setName(name: string) {
@@ -105,7 +114,12 @@ class Store {
   }
 
   public joinRoom() {
-    const { userName, roomCode } = this.loginForm;
+    const { roomCode } = this.loginForm;
+    const { userName } = this;
+
+    if (userName === undefined) {
+      return;
+    }
 
     socket.emit(SocketEvents.JoinRoom, {
       userName,
@@ -115,8 +129,30 @@ class Store {
     this.loginForm = this._getLoginFormDefaultState();
   }
 
+  public loginToRoom(roomCode?: string) {
+    console.log("loginToRoom");
+
+    if (this.room) return;
+
+    const { userName } = this;
+
+    if (userName === undefined || roomCode === undefined) {
+      toast.warning("userName roomCode undefined");
+      return;
+    }
+
+    socket.emit(SocketEvents.JoinRoom, {
+      userName,
+      roomCode,
+    });
+  }
+
   public async createRoom() {
-    const { userName } = this.loginForm;
+    const { userName } = this;
+
+    if (userName === undefined) {
+      return;
+    }
 
     socket.emit(SocketEvents.CreateRoom, userName);
 
@@ -125,7 +161,6 @@ class Store {
 
   private _getLoginFormDefaultState(): TLoginForm {
     return {
-      userName: "",
       roomCode: "",
       type: LoginType.Join,
     };

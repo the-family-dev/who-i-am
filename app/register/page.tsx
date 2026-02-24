@@ -9,10 +9,10 @@ export default observer(function Register() {
   return (
     <Surface
       variant="transparent"
-      className="rounded border p-4 flex flex-col gap-4 w-75 h-full"
+      className="rounded border p-4 flex flex-col gap-4 w-75 h-fit"
     >
       <Input
-        value={userName}
+        value={userName ?? ""}
         onChange={(e) => store.setName(e.target.value)}
         aria-label="name"
         className="w-full"
