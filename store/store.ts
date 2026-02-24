@@ -35,6 +35,8 @@ class Store {
     undefined,
   );
 
+  userName: string | undefined = undefined;
+
   room: TRoom | undefined = undefined;
 
   user: TUser | undefined = undefined;
@@ -45,7 +47,17 @@ class Store {
     makeAutoObservable(this);
   }
 
-  public getStoredName() {}
+  public getStoredName() {
+    this.userName = this._nameStorage.get();
+  }
+
+  public register() {
+    this._nameStorage.set(this.userName);
+  }
+
+  public setName(name: string) {
+    this.userName = name;
+  }
 
   public setLoginFormField<K extends keyof TLoginForm>(
     field: K,

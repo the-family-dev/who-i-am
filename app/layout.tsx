@@ -3,7 +3,7 @@ import { SocketEventsHandler } from "@/components/socket-event-handlers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Noir",
+  title: "who-i-am",
 };
 
 export default function RootLayout({
