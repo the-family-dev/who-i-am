@@ -30,8 +30,25 @@ app.prepare().then(() => {
       io.to(params.roomCode).emit(SocketEvents.ReciveMessage, params.message);
     });
 
+    socket.on(SocketEvents.LeaveRoom, (roomCode) => {
+      console.log("user left room", socket.id, roomCode);
+
+      const room = rooms.get(roomCode);
+
+      if (room === undefined) return;
+
+      const users = room.users.filter((user) => user.socketId !== socket.id);
+
+      room.users = users;
+
+      socket.leave(room.roomCode);
+
+      io.to(room.roomCode).emit(SocketEvents.RoomUsersUpdated, room.users);
+    });
+
     socket.on(SocketEvents.JoinRoom, (params) => {
       console.log(SocketEvents.JoinRoom, params);
+
       const { userName, roomCode } = params;
 
       const room = rooms.get(roomCode);
@@ -41,14 +58,35 @@ app.prepare().then(() => {
         return;
       }
 
+      socket.join(room.roomCode);
+
+      const existUser = room.users.find((user) => user.name === userName);
+
+      if (existUser && existUser.disconnected) {
+        // переподключение пользователя к комнате
+        existUser.disconnected = false;
+        existUser.socketId = socket.id;
+
+        io.to(socket.id).emit(SocketEvents.UserReconnected, existUser);
+
+        io.to(socket.id).emit(SocketEvents.MyUserJoined, existUser);
+
+        io.to(room.roomCode).emit(SocketEvents.UserJoined, room);
+
+        return;
+      }
+
+      if (existUser && !existUser.disconnected) {
+        io.to(socket.id).emit(SocketEvents.UserNameExists, existUser.name);
+        return;
+      }
+
       const newUser: TUser = {
-        id: socket.id,
+        socketId: socket.id,
         name: userName,
       };
 
       room.users.push(newUser);
-
-      socket.join(room.roomCode);
 
       io.to(socket.id).emit(SocketEvents.MyUserJoined, newUser);
 
@@ -58,10 +96,10 @@ app.prepare().then(() => {
     socket.on(SocketEvents.CreateRoom, (userName) => {
       console.log(SocketEvents.CreateRoom, userName);
 
-      const roomCode = generateCode(4);
+      const roomCode = generateCode(8);
 
       const newUser: TUser = {
-        id: socket.id,
+        socketId: socket.id,
         name: userName,
         isAdmin: true,
       };
@@ -81,6 +119,19 @@ app.prepare().then(() => {
     });
 
     socket.on(SocketEvents.Disconnect, (reson) => {
+      const room = Array.from(rooms.values()).find((room) =>
+        room.users.find((user) => user.socketId === socket.id),
+      );
+
+      if (room) {
+        const user = room.users.find((user) => user.socketId === socket.id);
+
+        if (user) {
+          user.disconnected = true;
+          io.to(room.roomCode).emit(SocketEvents.RoomUsersUpdated, room.users);
+        }
+      }
+
       console.log(`user disconnected ${socket.id} by ${reson}`);
     });
   });

@@ -2,11 +2,13 @@
 import type { SpringOptions } from "motion/react";
 import { useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
+import { TUser } from "../server/types";
+import { CrownIcon, GlobeOffIcon, PlugZap2Icon } from "lucide-react";
 
 interface UserCardProps {
   height?: React.CSSProperties["height"];
   width?: React.CSSProperties["width"];
-  name: string;
+  user: TUser;
   secret: string;
 }
 
@@ -22,8 +24,7 @@ const rotateAmplitude = 14;
 export default function UserCard({
   width = 240,
   height = 360,
-
-  name,
+  user,
   secret,
 }: UserCardProps) {
   const ref = useRef<HTMLElement>(null);
@@ -108,8 +109,20 @@ export default function UserCard({
           }}
         />
 
+        {user.isAdmin && (
+          <motion.div className="absolute top-2 right-2 bg-white p-2 rounded-xl">
+            <CrownIcon className="size-5 text-danger" />
+          </motion.div>
+        )}
+
+        {user.disconnected && (
+          <motion.div className="absolute top-2 left-2 bg-white p-2 rounded-xl">
+            <GlobeOffIcon className=" size-5 text-slate-500" />
+          </motion.div>
+        )}
+
         <motion.div className="absolute left-1/2 bottom-15 -translate-x-1/2 leading-none text-default w-28 h-13 overflow-hidden text-ellipsis line-clamp-3 text-center">
-          {name}
+          {user.name}
         </motion.div>
 
         <motion.textarea

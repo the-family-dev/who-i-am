@@ -26,8 +26,18 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
       router.push(`/game/${room.roomCode}`);
     });
 
+    socket.on(SocketEvents.RoomUsersUpdated, (users) => {
+      console.log(SocketEvents.RoomUsersUpdated, users);
+
+      store.setRoomUsers(users);
+    });
+
     socket.on(SocketEvents.RoomNotFound, (code) => {
       toast.danger(`Комната ${code} не найдена`);
+    });
+
+    socket.on(SocketEvents.UserNameExists, (name) => {
+      toast.warning(`Имя ${name} уже занято`);
     });
 
     socket.on(SocketEvents.ReciveMessage, (message) => {

@@ -4,11 +4,17 @@ export enum SocketEvents {
 
   CreateRoom = "create-room",
   RoomCreated = "room-created",
-
   JoinRoom = "join-room",
+  LeaveRoom = "leave-room",
   UserJoined = "user-joined",
   MyUserJoined = "my-user-joined",
   RoomNotFound = "room-not-found",
+  UserReconnected = "user-reconnected",
+
+  UserNameExists = "user-name-exists",
+
+  RoomUsersUpdated = "room-users-updated",
+  RoomUpdated = "room-updated",
 
   ReciveMessage = "recive-message",
   SendMessage = "send-message",
@@ -17,23 +23,11 @@ export enum SocketEvents {
   ConnectionsCount = "connections-count",
 }
 
-export type TSuccessResponse<T> = {
-  success: true;
-  message: string;
-  data: T;
-};
-
-export type TErrorResponse = {
-  success: false;
-  message: string;
-};
-
-export type TBaseApiResponse<T> = TSuccessResponse<T> | TErrorResponse;
-
 export type TUser = {
-  id: string;
+  socketId: string;
   name: string;
   isAdmin?: boolean;
+  disconnected?: boolean;
 };
 
 export type TMessage = {
@@ -62,6 +56,7 @@ export type ClientToServerEvents = {
     roomCode: string;
     message: TMessage;
   }) => void;
+  [SocketEvents.LeaveRoom]: (roomCode: string) => void;
 };
 
 export type ServerToClientEvents = {
@@ -70,4 +65,8 @@ export type ServerToClientEvents = {
   [SocketEvents.UserJoined]: (room: TRoom) => void;
   [SocketEvents.RoomNotFound]: (roomCode: string) => void;
   [SocketEvents.MyUserJoined]: (user: TUser) => void;
+  [SocketEvents.RoomUsersUpdated]: (users: TUser[]) => void;
+  [SocketEvents.UserReconnected]: (user: TUser) => void;
+  [SocketEvents.RoomUpdated]: (room: TRoom) => void;
+  [SocketEvents.UserNameExists]: (userName: string) => void;
 };

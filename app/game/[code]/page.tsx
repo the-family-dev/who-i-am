@@ -4,9 +4,7 @@ import { Chat } from "@/components/chat";
 import { observer } from "mobx-react-lite";
 import { useParams } from "next/navigation";
 import { store } from "@/store/store";
-import { UsersList } from "@/components/users-list";
 import { useEffect } from "react";
-import { Surface } from "@heroui/react";
 import UserCard from "../../../components/user-card";
 
 export default observer(function Game() {
@@ -16,6 +14,10 @@ export default observer(function Game() {
 
   useEffect(() => {
     store.loginToRoom(code);
+
+    return () => {
+      store.leaveRoom();
+    };
   }, []);
 
   if (userName === undefined) {
@@ -40,7 +42,7 @@ export default observer(function Game() {
     <div className="flex flex-row gap-4 h-full w-full justify-between">
       <div className="flex flex-row gap-8 flex-wrap w-full">
         {room.users.map((user) => (
-          <UserCard key={user.id} name={user.name} secret={"user.secret"} />
+          <UserCard key={user.socketId} user={user} secret={"user.secret"} />
         ))}
       </div>
       <Chat />

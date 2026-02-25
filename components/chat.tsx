@@ -51,7 +51,7 @@ const Message = observer<{ message: TMessage }>((props) => {
   const { user } = store;
   const { message } = props;
 
-  const isMyMessage = user?.id === message.sender.id;
+  const isMyMessage = user?.socketId === message.sender.socketId;
 
   return (
     <div

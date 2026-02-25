@@ -105,12 +105,30 @@ class Store {
     this.room = room;
   }
 
+  public setRoomUsers(users: TUser[]) {
+    if (this.room === undefined) return;
+
+    this.room.users = users;
+  }
+
   public setRouter(router: ReturnType<typeof useRouter>) {
     this.router = router;
   }
 
   public setUser(user: TUser) {
     this.user = user;
+  }
+
+  public leaveRoom() {
+    console.log("leaveRoom");
+    if (this.room === undefined) return;
+
+    socket.emit(SocketEvents.LeaveRoom, this.room.roomCode);
+
+    this.room = undefined;
+    this.user = undefined;
+
+    this.router?.push("/");
   }
 
   public joinRoom() {
