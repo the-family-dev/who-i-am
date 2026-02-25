@@ -1,9 +1,9 @@
 "use-client";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, toJS } from "mobx";
 import { SocketEvents, TMessage, TRoom, TUser } from "@/server/types";
 import { socket } from "@/lib/socket";
 import { TypedStorage } from "../utils/storage";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "@heroui/react";
 
 export enum LoginType {
@@ -41,7 +41,10 @@ class Store {
 
   user: TUser | undefined = undefined;
 
+  fromPath: string | undefined = undefined;
+
   router: ReturnType<typeof useRouter> | undefined = undefined;
+  pathname: ReturnType<typeof usePathname> | undefined = undefined;
 
   constructor() {
     makeAutoObservable(this);
@@ -50,7 +53,10 @@ class Store {
   public requestStoredName() {
     const name = this._nameStorage.get();
 
+    console.log(toJS(this.pathname));
+
     if (name === undefined) {
+      this.fromPath = this.pathname;
       this.router?.push("/register");
     }
 
@@ -61,7 +67,10 @@ class Store {
   public register() {
     this._nameStorage.set(this.userName);
 
-    this.router?.push("/");
+    const toPath = this.fromPath ? this.fromPath : "/";
+
+    this.router?.push(toPath);
+    this.fromPath = undefined;
   }
 
   public setName(name: string) {
@@ -115,6 +124,10 @@ class Store {
     this.router = router;
   }
 
+  public setPathname(pathname: ReturnType<typeof usePathname>) {
+    this.pathname = pathname;
+  }
+
   public setUser(user: TUser) {
     this.user = user;
   }
@@ -127,6 +140,7 @@ class Store {
 
     this.room = undefined;
     this.user = undefined;
+    this.chat = this._getChatDefaultState();
 
     this.router?.push("/");
   }

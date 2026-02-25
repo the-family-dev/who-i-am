@@ -4,16 +4,18 @@ import { useEffect, useLayoutEffect } from "react";
 import { SocketEvents } from "@/server/types";
 import { socket } from "@/lib/socket";
 import { store } from "../store/store";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "@heroui/react";
 
 export const SocketEventsHandler = observer(function SocketEventsHandler() {
   console.log("socket handler rendered");
 
   const router = useRouter();
+  const pathname = usePathname();
 
   useLayoutEffect(() => {
     store.setRouter(router);
+    store.setPathname(pathname);
 
     store.requestStoredName();
   }, []);
@@ -34,6 +36,7 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
 
     socket.on(SocketEvents.RoomNotFound, (code) => {
       toast.danger(`Комната ${code} не найдена`);
+      router.push(`/`);
     });
 
     socket.on(SocketEvents.UserNameExists, (name) => {
