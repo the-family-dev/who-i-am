@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "ts-node --project tsconfig.server.json server/index.ts",
-    "build": "next build &&  tsc --project tsconfig.server.json",
-    "start": "node dist/server/index.js",
+    "dev": "cross-env NODE_ENV=development ts-node --project tsconfig.server.json server/index.ts",
+    "build": "cross-env NODE_ENV=production next build && tsc --project tsconfig.server.json",
+    "start": "cross-env NODE_ENV=production node dist/server/index.js",
     "lint": "eslint"
   },
   "dependencies": {
@@ -31,6 +31,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/ws": "^8.18.1",
+    "cross-env": "^10.1.0",
     "eslint": "^10.0.1",
     "eslint-config-next": "^0.2.4",
     "tailwindcss": "^4",

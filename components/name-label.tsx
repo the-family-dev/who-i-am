@@ -16,12 +16,16 @@ export const NameLabel = observer(() => {
   if (userName === undefined) return;
 
   return (
-    <Surface className="absolute top-2 left-2 p-2 border rounded flex flex-row gap-2">
+    <Surface className="w-fit p-2 border rounded flex flex-row gap-2">
       <Button onPress={() => router.push("/")} variant="ghost" isIconOnly>
         <HomeIcon />
       </Button>
       <div className="font-medium text-2xl">{userName}</div>
-      <Button variant="ghost" isDisabled isIconOnly>
+      <Button
+        onPress={() => router.push("/register")}
+        variant="ghost"
+        isIconOnly
+      >
         <EditIcon />
       </Button>
     </Surface>
