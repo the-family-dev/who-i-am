@@ -69,6 +69,10 @@ class Store {
 
     const toPath = this.fromPath ? this.fromPath : "/";
 
+    if (this.fromPath) {
+      this.joinRoomByLink(this.fromPath.split("/").at(-1));
+    }
+
     this.router?.push(toPath);
     this.fromPath = undefined;
   }
@@ -161,15 +165,15 @@ class Store {
     this.loginForm = this._getLoginFormDefaultState();
   }
 
-  public loginToRoom(roomCode?: string) {
-    console.log("loginToRoom");
+  public joinRoomByLink(roomCode?: string) {
+    console.log("joinByLink");
 
     if (this.room) return;
 
     const { userName } = this;
 
     if (userName === undefined || roomCode === undefined) {
-      toast.warning("userName roomCode undefined");
+      toast.warning("userName or roomCode undefined");
       return;
     }
 

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { SocketEventsHandler } from "@/components/socket-event-handlers";
-import { NameLabel } from "@/components/name-label";
 import { Toast } from "@heroui/react";
 import { Comic_Relief } from "next/font/google";
 import classNames from "classnames";
 import "./globals.css";
+import { GameHeader } from "@/components/game-header";
 
 export const metadata: Metadata = {
   title: "who-i-am",
@@ -29,9 +29,7 @@ export default function RootLayout({
           "flex flex-col gap-8 h-full p-4 dark",
         )}
       >
-        <div className="flex flex-row items-start justify-start w-full">
-          <NameLabel />
-        </div>
+        <GameHeader />
         <div className="flex items-center justify-center w-full h-full">
           {children}
         </div>
