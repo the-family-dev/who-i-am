@@ -1,20 +1,13 @@
 import type { Metadata } from "next";
 import { SocketEventsHandler } from "@/components/socket-event-handlers";
 import { Toast } from "@heroui/react";
-import { Comic_Relief } from "next/font/google";
 import classNames from "classnames";
-import "./globals.css";
 import { GameHeader } from "@/components/game-header";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "who-i-am",
+  title: "А хто я",
 };
-
-const comicRelief = Comic_Relief({
-  subsets: ["latin", "cyrillic"], // Добавляем кириллицу, если нужно
-  weight: ["400", "700"], // Указываем нужные начертания
-  display: "swap",
-});
 
 export default function RootLayout({
   children,
@@ -23,12 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html className="dark h-full" lang="ru">
-      <body
-        className={classNames(
-          comicRelief.className,
-          "flex flex-col gap-8 h-full p-4 dark",
-        )}
-      >
+      <body className={classNames("flex flex-col gap-8 h-full p-4 dark")}>
         <GameHeader />
         <div className="flex items-center justify-center w-full h-full">
           {children}

@@ -25,6 +25,7 @@ export enum SocketEvents {
 
 export type TUser = {
   socketId: string;
+  /** Уникальный идентификатор */
   name: string;
   isAdmin?: boolean;
   disconnected?: boolean;
@@ -35,9 +36,15 @@ export type TMessage = {
   sender: TUser;
 };
 
+export type TRoomTable = {
+  id: string;
+  player?: TUser;
+};
+
 export type TRoom = {
   roomCode: string; // uniq
   users: TUser[];
+  tabels: TRoomTable[];
 };
 
 export type ClientToServerEvents = {

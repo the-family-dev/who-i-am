@@ -1,10 +1,10 @@
 "use client";
 import { observer } from "mobx-react-lite";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect } from "react";
 import { SocketEvents } from "@/server/types";
 import { socket } from "@/lib/socket";
-import { store } from "../store/store";
-import { usePathname, useRouter } from "next/navigation";
+import { store } from "@/store/store";
 import { toast } from "@heroui/react";
 
 export const SocketEventsHandler = observer(function SocketEventsHandler() {

@@ -3,7 +3,7 @@ import { Button, Form, Input, ScrollShadow, Surface } from "@heroui/react";
 import { SendIcon } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { FormEvent } from "react";
-import { TMessage } from "../server/types";
+import { TMessage } from "@/server/types";
 import classNames from "classnames";
 
 export const Chat = observer(() => {

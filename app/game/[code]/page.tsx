@@ -4,7 +4,8 @@ import { Chat } from "@/components/chat";
 import { observer } from "mobx-react-lite";
 import { useParams } from "next/navigation";
 import { store } from "@/store/store";
-import UserCard from "../../../components/user-card";
+import UserCard from "@/components/user-card";
+import { Button } from "@heroui/react";
 
 export default observer(function Game() {
   const { userName, room } = store;
@@ -22,9 +23,17 @@ export default observer(function Game() {
 
   if (room === undefined) {
     return (
-      <div className="flex flex-col ga-2">
-        Комната не найдена
-        <Link href={"/register"}>Ввести имя</Link>
+      <div className="flex flex-col gap-4 w-50">
+        <Button className={"w-full"} onPress={() => store.joinRoomByLink(code)}>
+          Войти
+        </Button>
+        <Button
+          variant="secondary"
+          className={"w-full"}
+          onPress={() => store.router?.push("/")}
+        >
+          На глвную
+        </Button>
       </div>
     );
   }

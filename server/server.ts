@@ -5,11 +5,9 @@ import {
   ClientToServerEvents,
   ServerToClientEvents,
   SocketEvents,
-  TRoom,
   TUser,
 } from "./types";
-import { generateCode } from "../utils/code-generaator";
-import { rooms } from "./data";
+import { roomService } from "./room-service";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = process.env.HOSTNAME || "localhost";
@@ -33,7 +31,7 @@ app.prepare().then(() => {
     socket.on(SocketEvents.LeaveRoom, (roomCode) => {
       console.log("user left room", socket.id, roomCode);
 
-      const room = rooms.get(roomCode);
+      const room = roomService.rooms.get(roomCode);
 
       if (room === undefined) return;
 
@@ -51,7 +49,7 @@ app.prepare().then(() => {
 
       const { userName, roomCode } = params;
 
-      const room = rooms.get(roomCode);
+      const room = roomService.rooms.get(roomCode);
 
       if (room === undefined) {
         io.to(socket.id).emit(SocketEvents.RoomNotFound, roomCode);
@@ -96,22 +94,15 @@ app.prepare().then(() => {
     socket.on(SocketEvents.CreateRoom, (userName) => {
       console.log(SocketEvents.CreateRoom, userName);
 
-      const roomCode = generateCode(8);
-
       const newUser: TUser = {
         socketId: socket.id,
         name: userName,
         isAdmin: true,
       };
 
-      const room: TRoom = {
-        roomCode,
-        users: [newUser],
-      };
+      const room = roomService.createRoom(newUser);
 
-      rooms.set(roomCode, room);
-
-      socket.join(roomCode);
+      socket.join(room.roomCode);
 
       io.to(socket.id).emit(SocketEvents.MyUserJoined, newUser);
 
@@ -119,7 +110,7 @@ app.prepare().then(() => {
     });
 
     socket.on(SocketEvents.Disconnect, (reson) => {
-      const room = Array.from(rooms.values()).find((room) =>
+      const room = Array.from(roomService.rooms.values()).find((room) =>
         room.users.find((user) => user.socketId === socket.id),
       );
 
@@ -138,6 +129,7 @@ app.prepare().then(() => {
 
   // Запуск сервера
   httpServer.listen(port, () => {
+    console.log("dev:", dev);
     console.log(`Server running on http://${hostname}:${port}`);
   });
 });
