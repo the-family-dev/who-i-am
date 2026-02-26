@@ -19,6 +19,26 @@ class RoomService {
     return room;
   }
 
+  public addUserToRoom(user: TUser, roomCode: TRoom["roomCode"]) {
+    const room = this.rooms.get(roomCode);
+
+    if (room === undefined) return;
+
+    room.users.push(user);
+  }
+
+  public reconnectUser(user: TUser, roomCode: TRoom["roomCode"]) {
+    const room = this.rooms.get(roomCode);
+
+    if (room === undefined) return;
+
+    const targetUser = room.users.find((u) => u.name === user.name);
+
+    if (targetUser === undefined) return;
+
+    targetUser.disconnected = false;
+  }
+
   // TODO потенциалньая проблема с
   public disconectUser(user: TUser) {
     for (const [, room] of this.rooms) {
