@@ -4,9 +4,7 @@ import { Chat } from "@/components/chat";
 import { observer } from "mobx-react-lite";
 import { useParams } from "next/navigation";
 import { store } from "@/store/store";
-import UserCard from "@/components/user-card";
 import { Button } from "@heroui/react";
-import { SpectatorsList } from "../../../components/spectators-list";
 import { GameTable } from "../../../components/game-table";
 
 export default observer(function Game() {
@@ -44,7 +42,7 @@ export default observer(function Game() {
     <div className="flex flex-row gap-4 h-full w-full justify-between">
       <div className="flex flex-row gap-8 flex-wrap w-full">
         {room.tabels.map((table) => (
-          <GameTable key={table.id} />
+          <GameTable key={table.id} table={table} />
         ))}
       </div>
       <Chat />

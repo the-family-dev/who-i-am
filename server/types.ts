@@ -12,6 +12,7 @@ export enum SocketEvents {
   UserReconnected = "user-reconnected",
 
   TakeTable = "take-table",
+  BecomeSpectator = "become-spectator",
 
   UserNameExists = "user-name-exists",
 
@@ -63,7 +64,22 @@ export type ClientToServerEvents = {
     message: TMessage;
   }) => void;
   [SocketEvents.LeaveRoom]: (roomCode: string) => void;
-  [SocketEvents.TakeTable]: (tableId: string, userName: string) => void;
+  [SocketEvents.TakeTable]: ({
+    tableId,
+    userName,
+    roomCode,
+  }: {
+    tableId: string;
+    userName: string;
+    roomCode: string;
+  }) => void;
+  [SocketEvents.BecomeSpectator]: ({
+    userName,
+    roomCode,
+  }: {
+    userName: string;
+    roomCode: string;
+  }) => void;
 };
 
 export type ServerToClientEvents = {

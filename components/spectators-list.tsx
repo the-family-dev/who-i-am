@@ -20,9 +20,15 @@ export const SpectatorsList = observer(() => {
         <Popover.Dialog>
           <div className="w-full">
             <div className="flex flex-col gap-2">
-              {room.spectators.map((user) => (
-                <SpectatorCard key={user.socketId} user={user} />
-              ))}
+              {(() => {
+                if (room.spectators.length === 0) {
+                  return <div>Зрителей нет</div>;
+                }
+
+                return room.spectators.map((user) => (
+                  <SpectatorCard key={user.socketId} user={user} />
+                ));
+              })()}
             </div>
           </div>
         </Popover.Dialog>

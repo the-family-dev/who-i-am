@@ -185,6 +185,23 @@ class Store {
 
   public takeTable(tableId: string) {
     if (this.userName === undefined) return;
+    if (this.room == undefined) return;
+
+    socket.emit(SocketEvents.TakeTable, {
+      roomCode: this.room.roomCode,
+      userName: this.userName,
+      tableId,
+    });
+  }
+
+  public becomeSpectator() {
+    if (this.userName === undefined) return;
+    if (this.room == undefined) return;
+
+    socket.emit(SocketEvents.BecomeSpectator, {
+      roomCode: this.room.roomCode,
+      userName: this.userName,
+    });
   }
 
   public async createRoom() {

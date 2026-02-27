@@ -23,10 +23,57 @@ app.prepare().then(() => {
   const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer);
 
   io.on(SocketEvents.Connection, (socket) => {
-    logEvent(SocketEvents.Connection, socket.id);
+    socket.onAny((event) => {
+      console.log(event);
+    });
+
+    socket.on(SocketEvents.TakeTable, (params) => {
+      const { roomCode, tableId, userName } = params;
+
+      const room = roomService.rooms.get(roomCode);
+
+      if (room === undefined) return;
+
+      const user = room.spectators.find((s) => s.name === userName);
+
+      if (user === undefined) return;
+
+      const table = room.tabels.find((t) => t.id === tableId);
+
+      if (table === undefined) return;
+
+      table.player = user;
+      room.spectators = room.spectators.filter((s) => s.name !== user.name);
+
+      io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
+    });
+
+    socket.on(SocketEvents.BecomeSpectator, (params) => {
+      const { roomCode, userName } = params;
+
+      const room = roomService.rooms.get(roomCode);
+
+      if (room === undefined) return;
+
+      let user: TUser | undefined = undefined;
+
+      for (const table of room.tabels) {
+        if (table.player === undefined) continue;
+
+        if (table.player.name === userName) {
+          user = table.player;
+          table.player = undefined;
+        }
+      }
+
+      if (user === undefined) return;
+
+      room.spectators.push(user);
+
+      io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
+    });
 
     socket.on(SocketEvents.SendMessage, (params) => {
-      logEvent(SocketEvents.SendMessage, params);
       io.to(params.roomCode).emit(SocketEvents.ReciveMessage, params.message);
     });
 
@@ -49,8 +96,6 @@ app.prepare().then(() => {
     });
 
     socket.on(SocketEvents.JoinRoom, (params) => {
-      logEvent(SocketEvents.JoinRoom, params);
-
       const { userName, roomCode } = params;
 
       const room = roomService.rooms.get(roomCode);
@@ -96,8 +141,6 @@ app.prepare().then(() => {
     });
 
     socket.on(SocketEvents.CreateRoom, (userName) => {
-      logEvent(SocketEvents.CreateRoom, userName);
-
       const newUser: TUser = {
         socketId: socket.id,
         name: userName,
@@ -114,8 +157,6 @@ app.prepare().then(() => {
     });
 
     socket.on(SocketEvents.Disconnect, (reson) => {
-      logEvent(SocketEvents.Disconnect, reson);
-
       const room = Array.from(roomService.rooms.values()).find((room) =>
         room.spectators.find((user) => user.socketId === socket.id),
       );

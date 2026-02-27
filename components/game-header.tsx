@@ -12,6 +12,11 @@ export const GameHeader = observer(() => {
     <div className="flex flex-row items-end justify-between w-full h-fit">
       <NameLabel />
       <div className="flex flex-row gap-2">
+        {room ? (
+          <Button onPress={() => store.becomeSpectator()}>
+            Стать зрителем
+          </Button>
+        ) : null}
         <SpectatorsList />
         {room ? (
           <Button onPress={() => store.leaveRoom()} variant="danger">

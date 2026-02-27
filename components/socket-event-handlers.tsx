@@ -36,7 +36,7 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
 
     socket.on(SocketEvents.RoomNotFound, (code) => {
       toast.danger(`Комната ${code} не найдена`);
-      router.push(`/`);
+      // router.push(`/`);
     });
 
     socket.on(SocketEvents.UserNameExists, (name) => {
