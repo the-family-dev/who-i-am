@@ -2,7 +2,7 @@ import { store } from "@/store/store";
 import { Button, Form, Input, ScrollShadow, Surface } from "@heroui/react";
 import { SendIcon } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import { FormEvent } from "react";
+import { FormEvent, useEffect, useRef } from "react";
 import { TMessage } from "@/server/types";
 import classNames from "classnames";
 
@@ -14,10 +14,20 @@ export const Chat = observer(() => {
     store.sendMessage();
   };
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages.length]);
+
   return (
     <Surface
       variant="transparent"
-      className="rounded border p-4 flex flex-col gap-4 w-75 shrink-0 h-full"
+      className="rounded border p-4 flex flex-col gap-4 w-75 shrink-0 h-[75vh]"
     >
       <div>Чат</div>
       <ScrollShadow className="h-full" hideScrollBar>
@@ -25,6 +35,7 @@ export const Chat = observer(() => {
           {messages.map((message, index) => {
             return <Message key={index} message={message} />;
           })}
+          <div ref={messagesEndRef} />
         </div>
       </ScrollShadow>
 

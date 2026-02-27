@@ -3,7 +3,8 @@ import type { SpringOptions } from "motion/react";
 import { useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import { TUser } from "@/server/types";
-import { CrownIcon, GlobeOffIcon, PlugZap2Icon } from "lucide-react";
+import { CrownIcon, GlobeOffIcon } from "lucide-react";
+import { cardHeight, cardWidth } from "@/utils/constants";
 
 interface UserCardProps {
   height?: React.CSSProperties["height"];
@@ -22,8 +23,8 @@ const scaleOnHover = 1.1;
 const rotateAmplitude = 14;
 
 export default function UserCard({
-  width = 240,
-  height = 360,
+  width = cardWidth,
+  height = cardHeight,
   user,
   secret,
 }: UserCardProps) {

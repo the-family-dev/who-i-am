@@ -11,16 +11,15 @@ export enum SocketEvents {
   RoomNotFound = "room-not-found",
   UserReconnected = "user-reconnected",
 
+  TakeTable = "take-table",
+
   UserNameExists = "user-name-exists",
 
-  RoomUsersUpdated = "room-users-updated",
+  // RoomUsersUpdated = "room-users-updated",
   RoomUpdated = "room-updated",
 
   ReciveMessage = "recive-message",
   SendMessage = "send-message",
-
-  HealthCheck = "health-check",
-  ConnectionsCount = "connections-count",
 }
 
 export type TUser = {
@@ -43,7 +42,7 @@ export type TRoomTable = {
 
 export type TRoom = {
   roomCode: string; // uniq
-  users: TUser[];
+  spectators: TUser[];
   tabels: TRoomTable[];
 };
 
@@ -64,6 +63,7 @@ export type ClientToServerEvents = {
     message: TMessage;
   }) => void;
   [SocketEvents.LeaveRoom]: (roomCode: string) => void;
+  [SocketEvents.TakeTable]: (tableId: string, userName: string) => void;
 };
 
 export type ServerToClientEvents = {
@@ -72,7 +72,7 @@ export type ServerToClientEvents = {
   [SocketEvents.UserJoined]: (room: TRoom) => void;
   [SocketEvents.RoomNotFound]: (roomCode: string) => void;
   [SocketEvents.MyUserJoined]: (user: TUser) => void;
-  [SocketEvents.RoomUsersUpdated]: (users: TUser[]) => void;
+  // [SocketEvents.RoomUsersUpdated]: (users: TUser[]) => void;
   [SocketEvents.UserReconnected]: (user: TUser) => void;
   [SocketEvents.RoomUpdated]: (room: TRoom) => void;
   [SocketEvents.UserNameExists]: (userName: string) => void;

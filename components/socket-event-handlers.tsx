@@ -28,10 +28,10 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
       router.push(`/game/${room.roomCode}`);
     });
 
-    socket.on(SocketEvents.RoomUsersUpdated, (users) => {
-      console.log(SocketEvents.RoomUsersUpdated, users);
+    socket.on(SocketEvents.RoomUpdated, (room) => {
+      console.log(SocketEvents.RoomUpdated, room);
 
-      store.setRoomUsers(users);
+      store.setRoom(room);
     });
 
     socket.on(SocketEvents.RoomNotFound, (code) => {
@@ -61,6 +61,7 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
     });
 
     return () => {
+      socket.removeAllListeners();
       console.log("socket handler unmounted");
     };
   }, []);

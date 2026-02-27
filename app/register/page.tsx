@@ -17,6 +17,7 @@ export default observer(function Register() {
         aria-label="name"
         className="w-full"
         placeholder="Введите имя"
+        maxLength={20}
       />
       <Button className="w-full" onPress={() => store.register()}>
         Сохранить

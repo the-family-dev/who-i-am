@@ -6,6 +6,8 @@ import { useParams } from "next/navigation";
 import { store } from "@/store/store";
 import UserCard from "@/components/user-card";
 import { Button } from "@heroui/react";
+import { SpectatorsList } from "../../../components/spectators-list";
+import { GameTable } from "../../../components/game-table";
 
 export default observer(function Game() {
   const { userName, room } = store;
@@ -41,8 +43,8 @@ export default observer(function Game() {
   return (
     <div className="flex flex-row gap-4 h-full w-full justify-between">
       <div className="flex flex-row gap-8 flex-wrap w-full">
-        {room.users.map((user) => (
-          <UserCard key={user.socketId} user={user} secret={"user.secret"} />
+        {room.tabels.map((table) => (
+          <GameTable key={table.id} />
         ))}
       </div>
       <Chat />

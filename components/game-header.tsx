@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { NameLabel } from "./name-label";
 import { Button } from "@heroui/react";
 import { store } from "@/store/store";
+import { SpectatorsList } from "./spectators-list";
 
 export const GameHeader = observer(() => {
   const { room } = store;
@@ -10,11 +11,14 @@ export const GameHeader = observer(() => {
   return (
     <div className="flex flex-row items-end justify-between w-full h-fit">
       <NameLabel />
-      {room ? (
-        <Button onPress={() => store.leaveRoom()} variant="danger">
-          Выйти
-        </Button>
-      ) : null}
+      <div className="flex flex-row gap-2">
+        <SpectatorsList />
+        {room ? (
+          <Button onPress={() => store.leaveRoom()} variant="danger">
+            Выйти
+          </Button>
+        ) : null}
+      </div>
     </div>
   );
 });

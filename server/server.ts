@@ -8,6 +8,7 @@ import {
   TUser,
 } from "./types";
 import { roomService } from "./room-service";
+import { logEvent } from "./log-service";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = process.env.HOSTNAME || "localhost";
@@ -22,30 +23,33 @@ app.prepare().then(() => {
   const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer);
 
   io.on(SocketEvents.Connection, (socket) => {
-    console.log("user connected ", socket.id);
+    logEvent(SocketEvents.Connection, socket.id);
 
     socket.on(SocketEvents.SendMessage, (params) => {
+      logEvent(SocketEvents.SendMessage, params);
       io.to(params.roomCode).emit(SocketEvents.ReciveMessage, params.message);
     });
 
     socket.on(SocketEvents.LeaveRoom, (roomCode) => {
-      console.log("user left room", socket.id, roomCode);
+      logEvent(SocketEvents.LeaveRoom, roomCode);
 
       const room = roomService.rooms.get(roomCode);
 
       if (room === undefined) return;
 
-      const users = room.users.filter((user) => user.socketId !== socket.id);
+      const users = room.spectators.filter(
+        (user) => user.socketId !== socket.id,
+      );
 
-      room.users = users;
+      room.spectators = users;
 
       socket.leave(room.roomCode);
 
-      io.to(room.roomCode).emit(SocketEvents.RoomUsersUpdated, room.users);
+      io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
     });
 
     socket.on(SocketEvents.JoinRoom, (params) => {
-      console.log(SocketEvents.JoinRoom, params);
+      logEvent(SocketEvents.JoinRoom, params);
 
       const { userName, roomCode } = params;
 
@@ -58,7 +62,7 @@ app.prepare().then(() => {
 
       socket.join(room.roomCode);
 
-      const existUser = room.users.find((user) => user.name === userName);
+      const existUser = room.spectators.find((user) => user.name === userName);
 
       if (existUser && existUser.disconnected) {
         // переподключение пользователя к комнате
@@ -84,7 +88,7 @@ app.prepare().then(() => {
         name: userName,
       };
 
-      room.users.push(newUser);
+      room.spectators.push(newUser);
 
       io.to(socket.id).emit(SocketEvents.MyUserJoined, newUser);
 
@@ -92,7 +96,7 @@ app.prepare().then(() => {
     });
 
     socket.on(SocketEvents.CreateRoom, (userName) => {
-      console.log(SocketEvents.CreateRoom, userName);
+      logEvent(SocketEvents.CreateRoom, userName);
 
       const newUser: TUser = {
         socketId: socket.id,
@@ -110,16 +114,20 @@ app.prepare().then(() => {
     });
 
     socket.on(SocketEvents.Disconnect, (reson) => {
+      logEvent(SocketEvents.Disconnect, reson);
+
       const room = Array.from(roomService.rooms.values()).find((room) =>
-        room.users.find((user) => user.socketId === socket.id),
+        room.spectators.find((user) => user.socketId === socket.id),
       );
 
       if (room) {
-        const user = room.users.find((user) => user.socketId === socket.id);
+        const user = room.spectators.find(
+          (user) => user.socketId === socket.id,
+        );
 
         if (user) {
           user.disconnected = true;
-          io.to(room.roomCode).emit(SocketEvents.RoomUsersUpdated, room.users);
+          io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
         }
       }
 

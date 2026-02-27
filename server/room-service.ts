@@ -1,5 +1,5 @@
-import { generateCode } from "../utils/code-generaator";
-import { TRoom, TUser } from "./types";
+import { generateCode } from "../utils/code-generator";
+import { TRoom, TRoomTable, TUser } from "./types";
 
 class RoomService {
   rooms = new Map<string, TRoom>();
@@ -8,11 +8,17 @@ class RoomService {
   public createRoom(user: TUser) {
     const room: TRoom = {
       roomCode: generateCode(8),
-      users: [],
+      spectators: [],
       tabels: [],
     };
 
-    room.users.push(user);
+    const table: TRoomTable = {
+      id: crypto.randomUUID(),
+    };
+
+    room.tabels.push(table);
+
+    room.spectators.push(user);
 
     this.rooms.set(room.roomCode, room);
 
@@ -24,7 +30,7 @@ class RoomService {
 
     if (room === undefined) return;
 
-    room.users.push(user);
+    room.spectators.push(user);
   }
 
   public reconnectUser(user: TUser, roomCode: TRoom["roomCode"]) {
@@ -32,7 +38,7 @@ class RoomService {
 
     if (room === undefined) return;
 
-    const targetUser = room.users.find((u) => u.name === user.name);
+    const targetUser = room.spectators.find((u) => u.name === user.name);
 
     if (targetUser === undefined) return;
 
@@ -42,7 +48,7 @@ class RoomService {
   // TODO потенциалньая проблема с
   public disconectUser(user: TUser) {
     for (const [, room] of this.rooms) {
-      const targetUser = room.users.find((u) => u.name === user.name);
+      const targetUser = room.spectators.find((u) => u.name === user.name);
 
       if (targetUser === undefined) return;
 

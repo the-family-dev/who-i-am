@@ -121,7 +121,7 @@ class Store {
   public setRoomUsers(users: TUser[]) {
     if (this.room === undefined) return;
 
-    this.room.users = users;
+    this.room.spectators = users;
   }
 
   public setRouter(router: ReturnType<typeof useRouter>) {
@@ -181,6 +181,10 @@ class Store {
       userName,
       roomCode,
     });
+  }
+
+  public takeTable(tableId: string) {
+    if (this.userName === undefined) return;
   }
 
   public async createRoom() {
