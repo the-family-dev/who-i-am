@@ -194,6 +194,21 @@ class Store {
     });
   }
 
+  public addTable() {
+    if (this.room === undefined) return;
+
+    socket.emit(SocketEvents.AddTable, this.room.roomCode);
+  }
+
+  public deleteTable(tableId: string) {
+    if (this.room === undefined) return;
+
+    socket.emit(SocketEvents.DeleteTable, {
+      roomCode: this.room.roomCode,
+      tableId,
+    });
+  }
+
   public becomeSpectator() {
     if (this.userName === undefined) return;
     if (this.room == undefined) return;

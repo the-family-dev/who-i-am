@@ -21,7 +21,12 @@ export const GameTable = observer<{ table: TRoomTable }>((props) => {
       {(() => {
         if (player === undefined) {
           return (
-            <Button onPress={() => store.takeTable(id)}>Занять стол</Button>
+            <div className="flex flex-col gap-2">
+              <Button onPress={() => store.takeTable(id)}>Занять стол</Button>
+              <Button variant="danger" onPress={() => store.deleteTable(id)}>
+                Удалить стол
+              </Button>
+            </div>
           );
         }
 

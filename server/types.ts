@@ -13,10 +13,11 @@ export enum SocketEvents {
 
   TakeTable = "take-table",
   BecomeSpectator = "become-spectator",
+  AddTable = "add-table",
+  DeleteTable = "delete-table",
 
   UserNameExists = "user-name-exists",
 
-  // RoomUsersUpdated = "room-users-updated",
   RoomUpdated = "room-updated",
 
   ReciveMessage = "recive-message",
@@ -80,6 +81,14 @@ export type ClientToServerEvents = {
     userName: string;
     roomCode: string;
   }) => void;
+  [SocketEvents.AddTable]: (roomCode: string) => void;
+  [SocketEvents.DeleteTable]: ({
+    roomCode,
+    tableId,
+  }: {
+    tableId: string;
+    roomCode: string;
+  }) => void;
 };
 
 export type ServerToClientEvents = {
@@ -88,7 +97,6 @@ export type ServerToClientEvents = {
   [SocketEvents.UserJoined]: (room: TRoom) => void;
   [SocketEvents.RoomNotFound]: (roomCode: string) => void;
   [SocketEvents.MyUserJoined]: (user: TUser) => void;
-  // [SocketEvents.RoomUsersUpdated]: (users: TUser[]) => void;
   [SocketEvents.UserReconnected]: (user: TUser) => void;
   [SocketEvents.RoomUpdated]: (room: TRoom) => void;
   [SocketEvents.UserNameExists]: (userName: string) => void;

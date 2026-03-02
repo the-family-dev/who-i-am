@@ -5,6 +5,7 @@ import {
   ClientToServerEvents,
   ServerToClientEvents,
   SocketEvents,
+  TRoomTable,
   TUser,
 } from "./types";
 import { roomService } from "./room-service";
@@ -25,6 +26,32 @@ app.prepare().then(() => {
   io.on(SocketEvents.Connection, (socket) => {
     socket.onAny((event) => {
       console.log(event);
+    });
+
+    socket.on(SocketEvents.DeleteTable, (params) => {
+      const { roomCode, tableId } = params;
+
+      const room = roomService.rooms.get(roomCode);
+
+      if (room === undefined) return;
+
+      room.tabels = room.tabels.filter((t) => t.id !== tableId);
+
+      io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
+    });
+
+    socket.on(SocketEvents.AddTable, (roomCode) => {
+      const room = roomService.rooms.get(roomCode);
+
+      if (room === undefined) return;
+
+      const table: TRoomTable = {
+        id: crypto.randomUUID(),
+      };
+
+      room.tabels.push(table);
+
+      io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
     });
 
     socket.on(SocketEvents.TakeTable, (params) => {

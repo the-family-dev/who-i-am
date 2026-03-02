@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { store } from "@/store/store";
 import { Button } from "@heroui/react";
 import { GameTable } from "../../../components/game-table";
+import { AddTableButton } from "../../../components/add-table-button";
 
 export default observer(function Game() {
   const { userName, room } = store;
@@ -44,6 +45,7 @@ export default observer(function Game() {
         {room.tabels.map((table) => (
           <GameTable key={table.id} table={table} />
         ))}
+        <AddTableButton />
       </div>
       <Chat />
     </div>
