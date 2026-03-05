@@ -28,6 +28,18 @@ app.prepare().then(() => {
       console.log(event);
     });
 
+    socket.on(SocketEvents.UpdateRoomState, (params) => {
+      const { roomCode, state } = params;
+
+      const room = roomService.rooms.get(roomCode);
+
+      if (room === undefined) return;
+
+      room.state = state;
+
+      io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
+    });
+
     socket.on(SocketEvents.DeleteTable, (params) => {
       const { roomCode, tableId } = params;
 
@@ -61,6 +73,18 @@ app.prepare().then(() => {
 
       if (room === undefined) return;
 
+      const alreadyPlayer = room.tabels.find(
+        (s) => s.player?.name === userName,
+      );
+
+      if (alreadyPlayer) {
+        io.to(socket.id).emit(
+          SocketEvents.AnyError,
+          "Вы уже за игровым столом",
+        );
+        return;
+      }
+
       const user = room.spectators.find((s) => s.name === userName);
 
       if (user === undefined) return;
@@ -81,6 +105,13 @@ app.prepare().then(() => {
       const room = roomService.rooms.get(roomCode);
 
       if (room === undefined) return;
+
+      const alreadySpectator = room.spectators.find((s) => s.name === userName);
+
+      if (alreadySpectator) {
+        io.to(socket.id).emit(SocketEvents.AnyError, "Вы уже зритель");
+        return;
+      }
 
       let user: TUser | undefined = undefined;
 
@@ -128,7 +159,10 @@ app.prepare().then(() => {
       const room = roomService.rooms.get(roomCode);
 
       if (room === undefined) {
-        io.to(socket.id).emit(SocketEvents.RoomNotFound, roomCode);
+        io.to(socket.id).emit(
+          SocketEvents.AnyError,
+          `Комната ${roomCode} не найдена`,
+        );
         return;
       }
 
@@ -151,7 +185,10 @@ app.prepare().then(() => {
       }
 
       if (existUser && !existUser.disconnected) {
-        io.to(socket.id).emit(SocketEvents.UserNameExists, existUser.name);
+        io.to(socket.id).emit(
+          SocketEvents.AnyError,
+          `Пользователь с именем ${existUser.name} уже существует`,
+        );
         return;
       }
 

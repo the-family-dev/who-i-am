@@ -15,13 +15,21 @@ export enum SocketEvents {
   BecomeSpectator = "become-spectator",
   AddTable = "add-table",
   DeleteTable = "delete-table",
+  UpdateRoomState = "update-room-state",
 
   UserNameExists = "user-name-exists",
+
+  AnyError = "any-error",
 
   RoomUpdated = "room-updated",
 
   ReciveMessage = "recive-message",
   SendMessage = "send-message",
+}
+
+export enum GameStates {
+  Idle = "idle",
+  Playing = "playing",
 }
 
 export type TUser = {
@@ -46,6 +54,7 @@ export type TRoom = {
   roomCode: string; // uniq
   spectators: TUser[];
   tabels: TRoomTable[];
+  state: GameStates;
 };
 
 export type ClientToServerEvents = {
@@ -82,6 +91,13 @@ export type ClientToServerEvents = {
     roomCode: string;
   }) => void;
   [SocketEvents.AddTable]: (roomCode: string) => void;
+  [SocketEvents.UpdateRoomState]: ({
+    state,
+    roomCode,
+  }: {
+    state: GameStates;
+    roomCode: string;
+  }) => void;
   [SocketEvents.DeleteTable]: ({
     roomCode,
     tableId,
@@ -95,9 +111,8 @@ export type ServerToClientEvents = {
   [SocketEvents.RoomCreated]: (room: TRoom) => void;
   [SocketEvents.ReciveMessage]: (message: TMessage) => void;
   [SocketEvents.UserJoined]: (room: TRoom) => void;
-  [SocketEvents.RoomNotFound]: (roomCode: string) => void;
   [SocketEvents.MyUserJoined]: (user: TUser) => void;
   [SocketEvents.UserReconnected]: (user: TUser) => void;
   [SocketEvents.RoomUpdated]: (room: TRoom) => void;
-  [SocketEvents.UserNameExists]: (userName: string) => void;
+  [SocketEvents.AnyError]: (message: string) => void;
 };

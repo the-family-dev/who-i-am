@@ -2,6 +2,7 @@ import { store } from "@/store/store";
 import { Button } from "@heroui/react";
 import { observer } from "mobx-react-lite";
 import { SpectatorsList } from "./spectators-list";
+import { AdminActions } from "./admin-actions";
 
 export const RoomActions = observer(function RoomActions() {
   const { room, isPlayer, isSpectator } = store;
@@ -10,6 +11,7 @@ export const RoomActions = observer(function RoomActions() {
 
   return (
     <div className="flex flex-row gap-2">
+      <AdminActions />
       {isPlayer ? (
         <Button onPress={() => store.becomeSpectator()}>Стать зрителем</Button>
       ) : null}

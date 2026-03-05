@@ -34,23 +34,13 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
       store.setRoom(room);
     });
 
-    socket.on(SocketEvents.RoomNotFound, (code) => {
-      toast.danger(`Комната ${code} не найдена`);
-      // router.push(`/`);
-    });
-
-    socket.on(SocketEvents.UserNameExists, (name) => {
-      toast.warning(`Имя ${name} уже занято`);
+    socket.on(SocketEvents.AnyError, (message) => {
+      toast.danger(message);
     });
 
     socket.on(SocketEvents.ReciveMessage, (message) => {
       store.reciveMessage(message);
     });
-
-    // socket.on(SocketEvents.MyUserJoined, (user) => {
-    //   console.log(SocketEvents.MyUserJoined, { user });
-    //   store.setUser(user);
-    // });
 
     socket.on(SocketEvents.UserJoined, (room) => {
       console.log(SocketEvents.UserJoined, room);

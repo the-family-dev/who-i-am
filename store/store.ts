@@ -1,6 +1,12 @@
 "use-client";
 import { makeAutoObservable, toJS } from "mobx";
-import { SocketEvents, TMessage, TRoom, TUser } from "@/server/types";
+import {
+  GameStates,
+  SocketEvents,
+  TMessage,
+  TRoom,
+  TUser,
+} from "@/server/types";
 import { socket } from "@/lib/socket";
 import { TypedStorage } from "../utils/storage";
 import { usePathname, useRouter } from "next/navigation";
@@ -89,6 +95,19 @@ class Store {
 
     this.router?.push(toPath);
     this.fromPath = undefined;
+  }
+
+  public setRoomState(state: GameStates) {
+    const { room } = this;
+
+    if (room === undefined) return;
+
+    const { roomCode } = room;
+
+    socket.emit(SocketEvents.UpdateRoomState, {
+      roomCode,
+      state,
+    });
   }
 
   public setName(name: string) {

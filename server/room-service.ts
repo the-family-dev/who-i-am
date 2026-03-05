@@ -1,5 +1,5 @@
 import { generateCode } from "../utils/code-generator";
-import { TRoom, TRoomTable, TUser } from "./types";
+import { GameStates, TRoom, TRoomTable, TUser } from "./types";
 
 class RoomService {
   rooms = new Map<string, TRoom>();
@@ -10,6 +10,7 @@ class RoomService {
       roomCode: generateCode(8),
       spectators: [],
       tabels: [],
+      state: GameStates.Idle,
     };
 
     const table: TRoomTable = {
