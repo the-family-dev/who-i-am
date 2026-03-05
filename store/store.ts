@@ -39,7 +39,7 @@ class Store {
 
   room: TRoom | undefined = undefined;
 
-  user: TUser | undefined = undefined;
+  // user: TUser | undefined = undefined;
 
   fromPath: string | undefined = undefined;
 
@@ -48,6 +48,20 @@ class Store {
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  get isSpectator() {
+    if (this.room === undefined) return false;
+
+    return this.room.spectators.some((user) => user.name === this.userName);
+  }
+
+  get isPlayer() {
+    if (this.room === undefined) return false;
+
+    return this.room.tabels.some(
+      (table) => table.player?.name === this.userName,
+    );
   }
 
   public requestStoredName() {
@@ -95,7 +109,7 @@ class Store {
   public sendMessage() {
     if (this.room === undefined) return;
 
-    if (this.user === undefined) return;
+    if (this.userName === undefined) return;
 
     if (this.chat.inputMessage.trim() === "") return;
 
@@ -103,7 +117,7 @@ class Store {
       roomCode: this.room.roomCode,
       message: {
         content: this.chat.inputMessage,
-        sender: this.user,
+        sender: this.userName,
       },
     });
 
@@ -132,9 +146,9 @@ class Store {
     this.pathname = pathname;
   }
 
-  public setUser(user: TUser) {
-    this.user = user;
-  }
+  // public setUser(user: TUser) {
+  //   this.user = user;
+  // }
 
   public leaveRoom() {
     console.log("leaveRoom");
@@ -143,7 +157,7 @@ class Store {
     socket.emit(SocketEvents.LeaveRoom, this.room.roomCode);
 
     this.room = undefined;
-    this.user = undefined;
+    // this.user = undefined;
     this.chat = this._getChatDefaultState();
 
     this.router?.push("/");

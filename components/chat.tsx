@@ -50,7 +50,12 @@ export const Chat = observer(() => {
           variant="secondary"
           maxLength={50}
         />
-        <Button type="submit" isIconOnly variant="secondary">
+        <Button
+          className={"shrink-0"}
+          type="submit"
+          isIconOnly
+          variant="secondary"
+        >
           <SendIcon />
         </Button>
       </Form>
@@ -59,10 +64,10 @@ export const Chat = observer(() => {
 });
 
 const Message = observer<{ message: TMessage }>((props) => {
-  const { user } = store;
+  const { userName } = store;
   const { message } = props;
 
-  const isMyMessage = user?.socketId === message.sender.socketId;
+  const isMyMessage = userName === message.sender;
 
   return (
     <div
@@ -81,7 +86,7 @@ const Message = observer<{ message: TMessage }>((props) => {
       </div>
       {isMyMessage ? null : (
         <div className={"text-xs self-start text-neutral-400"}>
-          {message.sender.name}
+          {message.sender}
         </div>
       )}
     </div>

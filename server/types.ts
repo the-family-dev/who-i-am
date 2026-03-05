@@ -34,7 +34,7 @@ export type TUser = {
 
 export type TMessage = {
   content: string;
-  sender: TUser;
+  sender: string;
 };
 
 export type TRoomTable = {

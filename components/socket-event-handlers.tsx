@@ -47,10 +47,10 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
       store.reciveMessage(message);
     });
 
-    socket.on(SocketEvents.MyUserJoined, (user) => {
-      console.log(SocketEvents.MyUserJoined, { user });
-      store.setUser(user);
-    });
+    // socket.on(SocketEvents.MyUserJoined, (user) => {
+    //   console.log(SocketEvents.MyUserJoined, { user });
+    //   store.setUser(user);
+    // });
 
     socket.on(SocketEvents.UserJoined, (room) => {
       console.log(SocketEvents.UserJoined, room);
