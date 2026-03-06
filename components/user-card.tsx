@@ -1,16 +1,23 @@
 "use client";
 import type { SpringOptions } from "motion/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import { TUser } from "@/server/types";
-import { CrownIcon, GlobeOffIcon } from "lucide-react";
+import { CheckIcon, CrownIcon, GlobeOffIcon, LoaderIcon } from "lucide-react";
 import { cardHeight, cardWidth } from "@/utils/constants";
+import { Button } from "@heroui/react";
+import { observer } from "mobx-react-lite";
 
 interface UserCardProps {
   height?: React.CSSProperties["height"];
   width?: React.CSSProperties["width"];
   user: TUser;
   secret: string;
+  disabled?: boolean;
+  typing?: boolean;
+  hidden?: boolean;
+  onFocus?: () => void;
+  onConfirm?: (newSecret: string) => void;
 }
 
 const springValues: SpringOptions = {
@@ -22,11 +29,16 @@ const springValues: SpringOptions = {
 const scaleOnHover = 1.1;
 const rotateAmplitude = 14;
 
-export default function UserCard({
+export default observer(function UserCard({
   width = cardWidth,
   height = cardHeight,
   user,
-  secret,
+  secret: initSecret,
+  disabled,
+  typing,
+  hidden,
+  onConfirm,
+  onFocus,
 }: UserCardProps) {
   const ref = useRef<HTMLElement>(null);
   const x = useMotionValue(0);
@@ -41,7 +53,10 @@ export default function UserCard({
     mass: 1,
   });
 
+  const [secret, setSecret] = useState<string>(initSecret);
+  const [visivbleAccept, setVisivbleAccept] = useState<boolean>(false);
   const [lastY, setLastY] = useState(0);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   function handleMouse(e: React.MouseEvent<HTMLElement>) {
     if (!ref.current) return;
@@ -76,6 +91,30 @@ export default function UserCard({
     rotateY.set(0);
     rotateFigcaption.set(0);
   }
+
+  function acceptHandler() {
+    if (onConfirm) {
+      onConfirm(secret);
+    }
+
+    if (textareaRef.current) {
+      textareaRef.current.blur();
+    }
+
+    setVisivbleAccept(false);
+  }
+
+  function handleFocus() {
+    if (onFocus) {
+      onFocus();
+    }
+
+    setVisivbleAccept(true);
+  }
+
+  useEffect(() => {
+    setSecret(initSecret);
+  }, [initSecret]);
 
   return (
     <figure
@@ -126,12 +165,47 @@ export default function UserCard({
           {user.name}
         </motion.div>
 
-        <motion.textarea
-          disabled
-          defaultValue={secret}
-          className="absolute resize-none left-1/2 bottom-44 -translate-x-1/2 leading-none text-xl text-default w-40 h-25"
-        />
+        <motion.div className="absolute left-1/2 bottom-44 -translate-x-1/2">
+          {(() => {
+            if (typing) {
+              return (
+                <div className="self-center text-default text-xl">
+                  {"Печатает..."}
+                </div>
+              );
+            }
+
+            if (hidden) {
+              return (
+                <div className="self-center text-default text-xl">{"???"}</div>
+              );
+            }
+
+            return (
+              <>
+                <motion.textarea
+                  ref={textareaRef}
+                  value={secret}
+                  disabled={disabled}
+                  onChange={(e) => setSecret(e.target.value)}
+                  onFocus={handleFocus}
+                  className="resize-none leading-none text-xl text-default rounded w-40 h-25 focus:outline-dashed focus:outline-2 focus:outline-offset-2 focus:outline-accent"
+                />
+                {visivbleAccept ? (
+                  <Button
+                    isIconOnly
+                    variant="secondary"
+                    className={"shrink-0 absolute rounded right-0 bottom-[-36]"}
+                    onPress={() => acceptHandler()}
+                  >
+                    <CheckIcon className="text-accent" />
+                  </Button>
+                ) : null}
+              </>
+            );
+          })()}
+        </motion.div>
       </motion.div>
     </figure>
   );
-}
+});

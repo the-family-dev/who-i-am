@@ -5,6 +5,14 @@ class RoomService {
   rooms = new Map<string, TRoom>();
   existUserNames = new Set<string>();
 
+  public generateTable(): TRoomTable {
+    return {
+      id: crypto.randomUUID(),
+      typing: undefined,
+      secret: "",
+    };
+  }
+
   public createRoom(user: TUser) {
     const room: TRoom = {
       roomCode: generateCode(8),
@@ -13,9 +21,7 @@ class RoomService {
       state: GameStates.Idle,
     };
 
-    const table: TRoomTable = {
-      id: crypto.randomUUID(),
-    };
+    const table = this.generateTable();
 
     room.tabels.push(table);
 

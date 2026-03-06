@@ -57,11 +57,31 @@ app.prepare().then(() => {
 
       if (room === undefined) return;
 
-      const table: TRoomTable = {
-        id: crypto.randomUUID(),
-      };
+      const table = roomService.generateTable();
 
       room.tabels.push(table);
+
+      io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
+    });
+
+    socket.on(SocketEvents.UpdateTable, (params) => {
+      const { roomCode, tableId, table } = params;
+
+      const room = roomService.rooms.get(roomCode);
+
+      if (room === undefined) return;
+
+      const targetTable = room.tabels.find((t) => t.id === tableId);
+
+      if (targetTable === undefined) return;
+
+      Object.assign(targetTable, {
+        ...table,
+      });
+
+      if (table.typing === undefined) {
+        targetTable.typing = table.typing;
+      }
 
       io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
     });

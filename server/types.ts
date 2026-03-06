@@ -16,6 +16,7 @@ export enum SocketEvents {
   AddTable = "add-table",
   DeleteTable = "delete-table",
   UpdateRoomState = "update-room-state",
+  UpdateTable = "update-table",
 
   UserNameExists = "user-name-exists",
 
@@ -47,7 +48,9 @@ export type TMessage = {
 
 export type TRoomTable = {
   id: string;
+  secret: string;
   player?: TUser;
+  typing?: string;
 };
 
 export type TRoom = {
@@ -81,6 +84,15 @@ export type ClientToServerEvents = {
   }: {
     tableId: string;
     userName: string;
+    roomCode: string;
+  }) => void;
+  [SocketEvents.UpdateTable]: ({
+    tableId,
+    table,
+    roomCode,
+  }: {
+    tableId: string;
+    table: Partial<TRoomTable>;
     roomCode: string;
   }) => void;
   [SocketEvents.BecomeSpectator]: ({

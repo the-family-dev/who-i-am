@@ -227,6 +227,33 @@ class Store {
     });
   }
 
+  public setTableTyping(tableId: string) {
+    if (this.room == undefined) return;
+    if (this.userName === undefined) return;
+
+    socket.emit(SocketEvents.UpdateTable, {
+      tableId,
+      roomCode: this.room.roomCode,
+      table: {
+        typing: this.userName,
+      },
+    });
+  }
+
+  public setTableSecret(tableId: string, secret: string) {
+    if (this.room == undefined) return;
+    if (this.userName === undefined) return;
+
+    socket.emit(SocketEvents.UpdateTable, {
+      tableId,
+      roomCode: this.room.roomCode,
+      table: {
+        secret,
+        typing: undefined,
+      },
+    });
+  }
+
   public addTable() {
     if (this.room === undefined) return;
 
