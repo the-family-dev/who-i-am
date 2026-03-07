@@ -8,7 +8,7 @@ import { toJS } from "mobx";
 
 export const GameTable = observer<{ table: TRoomTable }>((props) => {
   const { table } = props;
-  const { userName, room } = store;
+  const { userName, room, isPlaying } = store;
 
   const { player, id, secret, typing, isGuessed } = table;
 
@@ -16,7 +16,8 @@ export const GameTable = observer<{ table: TRoomTable }>((props) => {
     room !== undefined && room.currentTableId !== undefined
       ? room.currentTableId === id
       : false;
-  const isMyTurn = isCurrent && player !== undefined && player.name === userName;
+  const isMyTurn =
+    isCurrent && player !== undefined && player.name === userName;
 
   const isSomeTyping =
     room !== undefined
@@ -57,7 +58,7 @@ export const GameTable = observer<{ table: TRoomTable }>((props) => {
             secret={secret}
             hidden={player.name === userName && !isGuessed}
             typingUserName={typingUserName}
-            disabled={isTextareaDisabled}
+            disabled={isTextareaDisabled || isPlaying}
             onFocus={() => store.setTableTyping(id)}
             onConfirm={(value) => store.setTableSecret(id, value)}
             isCurrent={isCurrent}

@@ -151,17 +151,18 @@ export default observer(function UserCard({
           </motion.div>
         )}
 
-        {user.isAdmin && (
-          <motion.div className="absolute top-2 right-2 bg-white p-2 rounded-xl">
-            <CrownIcon className="size-5 text-danger" />
-          </motion.div>
-        )}
-
-        {user.disconnected && (
-          <motion.div className="absolute top-2 left-2 bg-white p-2 rounded-xl">
-            <GlobeOffIcon className=" size-5 text-slate-500" />
-          </motion.div>
-        )}
+        <motion.div className="absolute top-2 right-2 flex flex-row gap-2">
+          {user.disconnected && (
+            <motion.div className=" bg-white p-2 rounded-xl">
+              <GlobeOffIcon className=" size-5 text-slate-500" />
+            </motion.div>
+          )}
+          {user.isAdmin && (
+            <motion.div className=" bg-white p-2 rounded-xl">
+              <CrownIcon className="size-5 text-danger" />
+            </motion.div>
+          )}
+        </motion.div>
 
         <motion.div className="absolute left-1/2 bottom-15 -translate-x-1/2 leading-none text-default w-28 h-13 overflow-hidden text-ellipsis line-clamp-3 text-center">
           {user.name}

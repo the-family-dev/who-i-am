@@ -9,7 +9,7 @@ import { GameTable } from "../../../components/game-table";
 import { AddTableButton } from "../../../components/add-table-button";
 
 export default observer(function Game() {
-  const { userName, room } = store;
+  const { userName, room, isPlaying } = store;
 
   const { code } = useParams<{ code?: string }>();
 
@@ -45,7 +45,7 @@ export default observer(function Game() {
         {room.tabels.map((table) => (
           <GameTable key={table.id} table={table} />
         ))}
-        <AddTableButton />
+        {isPlaying ? null : <AddTableButton />}
       </div>
       <Chat />
     </div>

@@ -70,6 +70,33 @@ class Store {
     );
   }
 
+  get currentTable() {
+    if (this.room === undefined) return undefined;
+    const { currentTableId } = this.room;
+    if (currentTableId === undefined) return undefined;
+
+    return this.room.tabels.find((t) => t.id === currentTableId);
+  }
+
+  get currentPlayerName() {
+    if (this.currentTable === undefined) return undefined;
+
+    return this.currentTable.player?.name;
+  }
+
+  get isMyTurn() {
+    if (this.room === undefined) return false;
+
+    if (this.currentPlayerName === undefined) return false;
+
+    return this.isPlaying && this.currentPlayerName === this.userName;
+  }
+
+  get isPlaying() {
+    if (this.room === undefined) return false;
+    return this.room.state === GameStates.Playing;
+  }
+
   public requestStoredName() {
     const name = this._nameStorage.get();
 

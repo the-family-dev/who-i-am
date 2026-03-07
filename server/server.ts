@@ -25,7 +25,11 @@ function isAdminSocket(room: TRoom, socketId: string): boolean {
   if (spectatorAdmin) return true;
 
   for (const table of room.tabels) {
-    if (table.player && table.player.socketId === socketId && table.player.isAdmin) {
+    if (
+      table.player &&
+      table.player.socketId === socketId &&
+      table.player.isAdmin
+    ) {
       return true;
     }
   }
@@ -87,9 +91,7 @@ app.prepare().then(() => {
       room.state = state;
 
       if (state === GameStates.Playing) {
-        const firstTable = room.tabels.find(
-          (t) => t.player && !t.isGuessed,
-        );
+        const firstTable = room.tabels.find((t) => t.player && !t.isGuessed);
 
         room.currentTableId = firstTable ? firstTable.id : undefined;
       } else {
@@ -346,6 +348,12 @@ app.prepare().then(() => {
 
       room.spectators = users;
 
+      const table = room.tabels.find((t) => t.player?.socketId === socket.id);
+
+      if (table) {
+        table.player = undefined;
+      }
+
       socket.leave(room.roomCode);
 
       io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
@@ -366,18 +374,34 @@ app.prepare().then(() => {
 
       socket.join(room.roomCode);
 
-      const existUser = room.spectators.find((user) => user.name === userName);
+      const existUser = room.tabels.find(
+        (table) => table.player?.name === userName,
+      )?.player;
+      const existSpectator = room.spectators.find(
+        (user) => user.name === userName,
+      );
+
+      if (existSpectator) {
+        io.to(socket.id).emit(
+          SocketEvents.AnyError,
+          `Пользователь с именем ${existSpectator.name} уже существует`,
+        );
+
+        return;
+      }
 
       if (existUser && existUser.disconnected) {
         // переподключение пользователя к комнате
         existUser.disconnected = false;
         existUser.socketId = socket.id;
 
-        io.to(socket.id).emit(SocketEvents.UserReconnected, existUser);
+        // io.to(socket.id).emit(SocketEvents.UserReconnected, existUser);
 
-        io.to(socket.id).emit(SocketEvents.MyUserJoined, existUser);
+        // io.to(socket.id).emit(SocketEvents.MyUserJoined, existUser);
 
-        io.to(room.roomCode).emit(SocketEvents.UserJoined, room);
+        // io.to(room.roomCode).emit(SocketEvents.UserJoined, room);
+
+        io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
 
         return;
       }
@@ -419,19 +443,31 @@ app.prepare().then(() => {
     });
 
     socket.on(SocketEvents.Disconnect, (reson) => {
-      const room = Array.from(roomService.rooms.values()).find((room) =>
-        room.spectators.find((user) => user.socketId === socket.id),
+      const room = Array.from(roomService.rooms.values()).find(
+        (room) =>
+          room.spectators.find((user) => user.socketId === socket.id) ||
+          room.tabels.find((table) => table.player?.socketId === socket.id),
       );
 
-      if (room) {
-        const user = room.spectators.find(
-          (user) => user.socketId === socket.id,
-        );
+      if (room === undefined) return;
 
-        if (user) {
-          user.disconnected = true;
-          io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
-        }
+      const spectator = room.spectators.find(
+        (user) => user.socketId === socket.id,
+      );
+
+      if (spectator) {
+        room.spectators = room.spectators.filter(
+          (user) => user.socketId !== socket.id,
+        );
+      }
+
+      const player = room.tabels.find(
+        (table) => table.player?.socketId === socket.id,
+      )?.player;
+
+      if (player) {
+        player.disconnected = true;
+        io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
       }
 
       console.log(`user disconnected ${socket.id} by ${reson}`);
