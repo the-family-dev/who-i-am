@@ -8,15 +8,29 @@ import { toJS } from "mobx";
 
 export const GameTable = observer<{ table: TRoomTable }>((props) => {
   const { table } = props;
-  const { userName } = store;
+  const { userName, room } = store;
 
-  const { player, id, secret, typing } = table;
+  const { player, id, secret, typing, isGuessed } = table;
+
+  const isCurrent =
+    room !== undefined && room.currentTableId !== undefined
+      ? room.currentTableId === id
+      : false;
+  const isMyTurn = isCurrent && player !== undefined && player.name === userName;
+
+  const isSomeTyping =
+    room !== undefined
+      ? room.tabels.some((t) => t.typing !== undefined)
+      : false;
+  const isTypingHere = typing !== undefined;
+
+  const isTextareaDisabled = isSomeTyping && !isTypingHere;
 
   console.log(toJS(table));
 
   return (
     <Surface
-      className=" border rounded p-2 flex justify-center items-center"
+      className="border rounded-xl p-2 flex justify-center items-center"
       style={{
         width: cardWidth,
         height: cardHeight,
@@ -34,14 +48,21 @@ export const GameTable = observer<{ table: TRoomTable }>((props) => {
           );
         }
 
+        const typingUserName =
+          typing !== undefined && typing !== userName ? typing : undefined;
+
         return (
           <UserCard
             user={player}
             secret={secret}
-            hidden={player.name === userName}
-            typing={typing !== undefined && typing !== userName}
+            hidden={player.name === userName && !isGuessed}
+            typingUserName={typingUserName}
+            disabled={isTextareaDisabled}
             onFocus={() => store.setTableTyping(id)}
             onConfirm={(value) => store.setTableSecret(id, value)}
+            isCurrent={isCurrent}
+            isMyTurn={isMyTurn}
+            isGuessed={isGuessed}
           />
         );
       })()}

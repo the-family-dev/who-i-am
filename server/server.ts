@@ -3,8 +3,10 @@ import next from "next";
 import { Server } from "socket.io";
 import {
   ClientToServerEvents,
+  GameStates,
   ServerToClientEvents,
   SocketEvents,
+  TRoom,
   TRoomTable,
   TUser,
 } from "./types";
@@ -14,6 +16,29 @@ import { logEvent } from "./log-service";
 const dev = process.env.NODE_ENV !== "production";
 const hostname = process.env.HOSTNAME || "localhost";
 const port = parseInt(process.env.PORT || "3000", 10);
+
+function getNextTableId(room: TRoom): string | undefined {
+  if (room.tabels.length === 0) return undefined;
+
+  const tables = room.tabels;
+  const currentId = room.currentTableId;
+  const startIndex = currentId
+    ? tables.findIndex((t) => t.id === currentId)
+    : -1;
+
+  const total = tables.length;
+
+  for (let step = 1; step <= total; step++) {
+    const index = (startIndex + step) % total;
+    const table = tables[index];
+
+    if (table.player && !table.isGuessed) {
+      return table.id;
+    }
+  }
+
+  return undefined;
+}
 
 // Инициализация Next.js
 const app = next({ dev, hostname, port });
@@ -36,6 +61,16 @@ app.prepare().then(() => {
       if (room === undefined) return;
 
       room.state = state;
+
+      if (state === GameStates.Playing) {
+        const firstTable = room.tabels.find(
+          (t) => t.player && !t.isGuessed,
+        );
+
+        room.currentTableId = firstTable ? firstTable.id : undefined;
+      } else {
+        room.currentTableId = undefined;
+      }
 
       io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
     });
@@ -125,6 +160,13 @@ app.prepare().then(() => {
       const room = roomService.rooms.get(roomCode);
 
       if (room === undefined) return;
+      if (room.state !== GameStates.Idle) {
+        io.to(socket.id).emit(
+          SocketEvents.AnyError,
+          "Стать зрителем можно только во время ожидания",
+        );
+        return;
+      }
 
       const alreadySpectator = room.spectators.find((s) => s.name === userName);
 
@@ -153,6 +195,86 @@ app.prepare().then(() => {
 
     socket.on(SocketEvents.SendMessage, (params) => {
       io.to(params.roomCode).emit(SocketEvents.ReciveMessage, params.message);
+    });
+
+    socket.on(SocketEvents.MakeGuess, (params) => {
+      const { roomCode, userName } = params;
+
+      const room = roomService.rooms.get(roomCode);
+
+      if (room === undefined) return;
+      if (room.state !== GameStates.Playing) return;
+
+      const currentTableId = room.currentTableId;
+
+      if (currentTableId === undefined) return;
+
+      const table = room.tabels.find((t) => t.id === currentTableId);
+
+      if (table === undefined || table.player === undefined) return;
+
+      if (table.player.name === userName) {
+        io.to(socket.id).emit(
+          SocketEvents.AnyError,
+          "Игрок, который отгадывает, не может подтверждать отгадку",
+        );
+        return;
+      }
+
+      if (!table.secret.trim()) {
+        io.to(socket.id).emit(
+          SocketEvents.AnyError,
+          "Секретное слово еще не задано",
+        );
+        return;
+      }
+
+      table.isGuessed = true;
+
+      const nextTableId = getNextTableId(room);
+
+      if (nextTableId === undefined) {
+        room.state = GameStates.Idle;
+        room.currentTableId = undefined;
+      } else {
+        room.currentTableId = nextTableId;
+      }
+
+      io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
+    });
+
+    socket.on(SocketEvents.NextTurn, (roomCode) => {
+      const room = roomService.rooms.get(roomCode);
+
+      if (room === undefined) return;
+
+      const nextTableId = getNextTableId(room);
+
+      if (nextTableId === undefined) {
+        room.state = GameStates.Idle;
+        room.currentTableId = undefined;
+      } else {
+        room.currentTableId = nextTableId;
+      }
+
+      io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
+    });
+
+    socket.on(SocketEvents.RestartGame, (roomCode) => {
+      const room = roomService.rooms.get(roomCode);
+
+      if (room === undefined) return;
+
+      room.state = GameStates.Idle;
+      room.currentTableId = undefined;
+
+      for (const table of room.tabels) {
+        table.secret = "";
+        table.typing = undefined;
+        table.isGuessed = false;
+      }
+
+      io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
     });
 
     socket.on(SocketEvents.LeaveRoom, (roomCode) => {

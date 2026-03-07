@@ -17,6 +17,9 @@ export enum SocketEvents {
   DeleteTable = "delete-table",
   UpdateRoomState = "update-room-state",
   UpdateTable = "update-table",
+  MakeGuess = "make-guess",
+  NextTurn = "next-turn",
+  RestartGame = "restart-game",
 
   UserNameExists = "user-name-exists",
 
@@ -51,6 +54,7 @@ export type TRoomTable = {
   secret: string;
   player?: TUser;
   typing?: string;
+  isGuessed?: boolean;
 };
 
 export type TRoom = {
@@ -58,6 +62,7 @@ export type TRoom = {
   spectators: TUser[];
   tabels: TRoomTable[];
   state: GameStates;
+  currentTableId?: string;
 };
 
 export type ClientToServerEvents = {
@@ -117,6 +122,13 @@ export type ClientToServerEvents = {
     tableId: string;
     roomCode: string;
   }) => void;
+  [SocketEvents.MakeGuess]: (params: {
+    roomCode: string;
+    userName: string;
+    guess: string;
+  }) => void;
+  [SocketEvents.NextTurn]: (roomCode: string) => void;
+  [SocketEvents.RestartGame]: (roomCode: string) => void;
 };
 
 export type ServerToClientEvents = {

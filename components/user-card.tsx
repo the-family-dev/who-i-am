@@ -3,9 +3,8 @@ import type { SpringOptions } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import { TUser } from "@/server/types";
-import { CheckIcon, CrownIcon, GlobeOffIcon, LoaderIcon } from "lucide-react";
+import { CrownIcon, GlobeOffIcon } from "lucide-react";
 import { cardHeight, cardWidth } from "@/utils/constants";
-import { Button } from "@heroui/react";
 import { observer } from "mobx-react-lite";
 
 interface UserCardProps {
@@ -14,10 +13,13 @@ interface UserCardProps {
   user: TUser;
   secret: string;
   disabled?: boolean;
-  typing?: boolean;
+  typingUserName?: string;
   hidden?: boolean;
   onFocus?: () => void;
   onConfirm?: (newSecret: string) => void;
+  isCurrent?: boolean;
+  isMyTurn?: boolean;
+  isGuessed?: boolean;
 }
 
 const springValues: SpringOptions = {
@@ -35,10 +37,13 @@ export default observer(function UserCard({
   user,
   secret: initSecret,
   disabled,
-  typing,
+  typingUserName,
   hidden,
   onConfirm,
   onFocus,
+  isCurrent,
+  isMyTurn,
+  isGuessed,
 }: UserCardProps) {
   const ref = useRef<HTMLElement>(null);
   const x = useMotionValue(0);
@@ -54,7 +59,6 @@ export default observer(function UserCard({
   });
 
   const [secret, setSecret] = useState<string>(initSecret);
-  const [visivbleAccept, setVisivbleAccept] = useState<boolean>(false);
   const [lastY, setLastY] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -92,24 +96,16 @@ export default observer(function UserCard({
     rotateFigcaption.set(0);
   }
 
-  function acceptHandler() {
-    if (onConfirm) {
-      onConfirm(secret);
-    }
-
-    if (textareaRef.current) {
-      textareaRef.current.blur();
-    }
-
-    setVisivbleAccept(false);
-  }
-
   function handleFocus() {
     if (onFocus) {
       onFocus();
     }
+  }
 
-    setVisivbleAccept(true);
+  function handleBlur() {
+    if (onConfirm) {
+      onConfirm(secret);
+    }
   }
 
   useEffect(() => {
@@ -149,6 +145,12 @@ export default observer(function UserCard({
           }}
         />
 
+        {isCurrent && (
+          <motion.div className="absolute top-2 left-2 bg-accent text-xs px-2 py-1 rounded">
+            {isMyTurn ? "Ваш ход" : `Ход: ${user.name}`}
+          </motion.div>
+        )}
+
         {user.isAdmin && (
           <motion.div className="absolute top-2 right-2 bg-white p-2 rounded-xl">
             <CrownIcon className="size-5 text-danger" />
@@ -167,15 +169,20 @@ export default observer(function UserCard({
 
         <motion.div className="absolute left-1/2 bottom-44 -translate-x-1/2">
           {(() => {
-            if (typing) {
+            if (typingUserName !== undefined) {
+              const name = typingUserName || "Игрок";
               return (
                 <div className="self-center text-default text-xl">
-                  {"Печатает..."}
+                  {`${name} печатает...`}
                 </div>
               );
             }
 
             if (hidden) {
+              if (secret.trim() === "") {
+                return null;
+              }
+
               return (
                 <div className="self-center text-default text-xl">{"???"}</div>
               );
@@ -189,22 +196,19 @@ export default observer(function UserCard({
                   disabled={disabled}
                   onChange={(e) => setSecret(e.target.value)}
                   onFocus={handleFocus}
+                  onBlur={handleBlur}
                   className="resize-none leading-none text-xl text-default rounded w-40 h-25 focus:outline-dashed focus:outline-2 focus:outline-offset-2 focus:outline-accent"
                 />
-                {visivbleAccept ? (
-                  <Button
-                    isIconOnly
-                    variant="secondary"
-                    className={"shrink-0 absolute rounded right-0 bottom-[-36]"}
-                    onPress={() => acceptHandler()}
-                  >
-                    <CheckIcon className="text-accent" />
-                  </Button>
-                ) : null}
               </>
             );
           })()}
         </motion.div>
+
+        {isGuessed ? (
+          <motion.div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-success text-xs px-2 py-1 rounded">
+            Слово отгадано
+          </motion.div>
+        ) : null}
       </motion.div>
     </figure>
   );

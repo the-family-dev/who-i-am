@@ -1,6 +1,6 @@
 import { GameStates } from "@/server/types";
 import { store } from "@/store/store";
-import { Label, ListBox, Select } from "@heroui/react";
+import { Button, Label, ListBox, Select } from "@heroui/react";
 import { observer } from "mobx-react-lite";
 
 const states = [
@@ -30,7 +30,7 @@ export const AdminActions = observer(() => {
   const { state } = room;
 
   return (
-    <>
+    <div className="flex flex-row gap-2 items-center">
       <Select
         className={"w-40"}
         placeholder="Select a state"
@@ -61,6 +61,22 @@ export const AdminActions = observer(() => {
           </ListBox>
         </Select.Popover>
       </Select>
-    </>
+      {state === GameStates.Playing ? (
+        <Button
+          variant="secondary"
+          className="shrink-0"
+          onPress={() => store.nextTurn()}
+        >
+          Следующий ход
+        </Button>
+      ) : null}
+      <Button
+        variant="secondary"
+        className="shrink-0"
+        onPress={() => store.restartGame()}
+      >
+        Рестарт игры
+      </Button>
+    </div>
   );
 });

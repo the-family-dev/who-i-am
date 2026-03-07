@@ -291,6 +291,29 @@ class Store {
     this.loginForm = this._getLoginFormDefaultState();
   }
 
+  public makeGuess() {
+    if (this.room === undefined) return;
+    if (this.userName === undefined) return;
+
+    socket.emit(SocketEvents.MakeGuess, {
+      roomCode: this.room.roomCode,
+      userName: this.userName,
+      guess: "",
+    });
+  }
+
+  public nextTurn() {
+    if (this.room === undefined) return;
+
+    socket.emit(SocketEvents.NextTurn, this.room.roomCode);
+  }
+
+  public restartGame() {
+    if (this.room === undefined) return;
+
+    socket.emit(SocketEvents.RestartGame, this.room.roomCode);
+  }
+
   private _getLoginFormDefaultState(): TLoginForm {
     return {
       roomCode: "",
