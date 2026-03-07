@@ -17,6 +17,22 @@ const dev = process.env.NODE_ENV !== "production";
 const hostname = process.env.HOSTNAME || "localhost";
 const port = parseInt(process.env.PORT || "3000", 10);
 
+function isAdminSocket(room: TRoom, socketId: string): boolean {
+  const spectatorAdmin = room.spectators.find(
+    (user) => user.socketId === socketId && user.isAdmin,
+  );
+
+  if (spectatorAdmin) return true;
+
+  for (const table of room.tabels) {
+    if (table.player && table.player.socketId === socketId && table.player.isAdmin) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 function getNextTableId(room: TRoom): string | undefined {
   if (room.tabels.length === 0) return undefined;
 
@@ -60,6 +76,14 @@ app.prepare().then(() => {
 
       if (room === undefined) return;
 
+      if (!isAdminSocket(room, socket.id)) {
+        io.to(socket.id).emit(
+          SocketEvents.AnyError,
+          "Только админ может управлять состоянием игры",
+        );
+        return;
+      }
+
       room.state = state;
 
       if (state === GameStates.Playing) {
@@ -82,6 +106,14 @@ app.prepare().then(() => {
 
       if (room === undefined) return;
 
+      if (!isAdminSocket(room, socket.id)) {
+        io.to(socket.id).emit(
+          SocketEvents.AnyError,
+          "Только админ может управлять столами",
+        );
+        return;
+      }
+
       room.tabels = room.tabels.filter((t) => t.id !== tableId);
 
       io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
@@ -91,6 +123,14 @@ app.prepare().then(() => {
       const room = roomService.rooms.get(roomCode);
 
       if (room === undefined) return;
+
+      if (!isAdminSocket(room, socket.id)) {
+        io.to(socket.id).emit(
+          SocketEvents.AnyError,
+          "Только админ может управлять столами",
+        );
+        return;
+      }
 
       const table = roomService.generateTable();
 
@@ -248,6 +288,14 @@ app.prepare().then(() => {
 
       if (room === undefined) return;
 
+      if (!isAdminSocket(room, socket.id)) {
+        io.to(socket.id).emit(
+          SocketEvents.AnyError,
+          "Только админ может переключать ход",
+        );
+        return;
+      }
+
       const nextTableId = getNextTableId(room);
 
       if (nextTableId === undefined) {
@@ -264,6 +312,14 @@ app.prepare().then(() => {
       const room = roomService.rooms.get(roomCode);
 
       if (room === undefined) return;
+
+      if (!isAdminSocket(room, socket.id)) {
+        io.to(socket.id).emit(
+          SocketEvents.AnyError,
+          "Только админ может перезапускать игру",
+        );
+        return;
+      }
 
       room.state = GameStates.Idle;
       room.currentTableId = undefined;
