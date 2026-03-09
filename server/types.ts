@@ -18,6 +18,7 @@ export enum SocketEvents {
   UpdateRoomState = "update-room-state",
   UpdateTable = "update-table",
   MakeGuess = "make-guess",
+  WordGuessed = "word-guessed",
   NextTurn = "next-turn",
   RestartGame = "restart-game",
 
@@ -138,5 +139,6 @@ export type ServerToClientEvents = {
   [SocketEvents.MyUserJoined]: (user: TUser) => void;
   [SocketEvents.UserReconnected]: (user: TUser) => void;
   [SocketEvents.RoomUpdated]: (room: TRoom) => void;
+  [SocketEvents.WordGuessed]: () => void;
   [SocketEvents.AnyError]: (message: string) => void;
 };

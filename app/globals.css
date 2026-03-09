@@ -1,2 +1,13 @@
 @import "tailwindcss";
 @import "@heroui/styles";
+
+@keyframes emoji-confetti-fly {
+  from {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--ex, 0), var(--ey, 0)) rotate(var(--rot, 0deg));
+    opacity: 0;
+  }
+}

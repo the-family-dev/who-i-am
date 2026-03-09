@@ -7,6 +7,7 @@ import { store } from "@/store/store";
 import { Button } from "@heroui/react";
 import { GameTable } from "../../../components/game-table";
 import { AddTableButton } from "../../../components/add-table-button";
+import { EmojiConfetti } from "@/components/emoji-confetti";
 
 export default observer(function Game() {
   const { userName, room, isPlaying } = store;
@@ -40,7 +41,8 @@ export default observer(function Game() {
   }
 
   return (
-    <div className="flex flex-row gap-4 h-full w-full justify-between">
+    <div className="flex flex-row gap-4 h-full w-full justify-between relative">
+      <EmojiConfetti />
       <div className="flex flex-row gap-8 flex-wrap w-full">
         {room.tabels.map((table) => (
           <GameTable key={table.id} table={table} />

@@ -34,6 +34,10 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
       store.setRoom(room);
     });
 
+    socket.on(SocketEvents.WordGuessed, () => {
+      store.triggerConfetti();
+    });
+
     socket.on(SocketEvents.AnyError, (message) => {
       toast.danger(message);
     });

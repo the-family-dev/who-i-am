@@ -192,6 +192,13 @@ class Store {
     this.pathname = pathname;
   }
 
+  /** Запускает взрыв конфетти (видят все в комнате при WordGuessed; можно вызывать и в других местах) */
+  public triggerConfetti() {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("trigger-confetti"));
+    }
+  }
+
   // public setUser(user: TUser) {
   //   this.user = user;
   // }

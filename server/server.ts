@@ -273,6 +273,8 @@ app.prepare().then(() => {
 
       table.isGuessed = true;
 
+      io.to(room.roomCode).emit(SocketEvents.WordGuessed);
+
       const nextTableId = getNextTableId(room);
 
       if (nextTableId === undefined) {
