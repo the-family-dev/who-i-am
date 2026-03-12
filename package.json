@@ -6,6 +6,10 @@
     "dev": "nodemon --exec ts-node --project tsconfig.server.json server/server.ts",
     "build": "cross-env NODE_ENV=production next build && tsc --project tsconfig.server.json",
     "start": "cross-env NODE_ENV=production node dist/server/server.js",
+    "pm2:start": "pm2 start ecosystem.config.cjs",
+    "pm2:stop": "pm2 stop who-i-am",
+    "pm2:restart": "pm2 restart who-i-am --update-env",
+    "pm2:delete": "pm2 delete who-i-am",
     "lint": "eslint"
   },
   "dependencies": {
