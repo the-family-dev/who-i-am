@@ -1,0 +1,12 @@
+---
+description: Use HeroUI v3 components for UI
+alwaysApply: true
+---
+
+# HeroUI v3
+
+This project uses **HeroUI version 3** (`@heroui/react` and `@heroui/styles`).
+
+- Prefer HeroUI v3 components for buttons, forms, modals, popovers, inputs, etc.
+- Import from `@heroui/react` (e.g. `Button`, `Popover`, `Input`, `Surface`, `Toast`).
+- Follow the v3 API: e.g. `Popover` has no `placement` on the root; use `Popover.Content` with `placement`. Use component APIs as in the [HeroUI v3 docs](https://www.heroui.com/).

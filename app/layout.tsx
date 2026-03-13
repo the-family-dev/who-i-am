@@ -3,6 +3,8 @@ import { SocketEventsHandler } from "@/components/socket-event-handlers";
 import { Toast } from "@heroui/react";
 import classNames from "classnames";
 import { GameHeader } from "@/components/game-header";
+import { DebugPanel } from "@/components/debug-panel";
+import { EmojiConfetti } from "@/components/emoji-confetti";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,6 +25,8 @@ export default function RootLayout({
         </div>
         <SocketEventsHandler />
         <Toast.Provider />
+        <DebugPanel />
+        <EmojiConfetti />
       </body>
     </html>
   );

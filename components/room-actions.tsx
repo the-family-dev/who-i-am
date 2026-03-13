@@ -23,7 +23,6 @@ export const RoomActions = observer(function RoomActions() {
 
   return (
     <div className="flex flex-row gap-2">
-      <Button onPress={() => store.triggerConfetti()}>конфети</Button>
       {canConfirmGuess ? (
         <div className="flex flex-row gap-2 items-center mt-1">
           <Button className="shrink-0 bg-success" onPress={handleWordGuessed}>
