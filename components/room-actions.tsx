@@ -2,16 +2,18 @@ import { store } from "@/store/store";
 import { Dropdown, Label } from "@heroui/react";
 import { observer } from "mobx-react-lite";
 import {
-  MoreVertical as MoreVerticalIcon,
-  Play as PlayIcon,
-  Square as SquareIcon,
-  SkipForward as SkipForwardIcon,
-  RotateCw as RotateCwIcon,
-  CheckCircle as CheckCircleIcon,
-  Eye as EyeIcon,
-  LogOut as LogOutIcon,
-  Flag as FlagIcon,
+  MoreVerticalIcon,
+  PlayIcon,
+  SquareIcon,
+   SkipForwardIcon,
+   RotateCwIcon,
+  CheckCircleIcon,
+  EyeIcon,
+   LogOutIcon,
+   FlagIcon,
+   CopyIcon,
 } from "lucide-react";
+import { toast } from "@heroui/react";
 import { RoomParticipantsList } from "./room-participants-list";
 import { GameStates } from "@/server/types";
 
@@ -23,7 +25,6 @@ export const RoomActions = observer(function RoomActions() {
     isMyTurn,
     canConfirmGuess,
     canBecomeSpectator,
-    totalPlayerCount,
     allPlayersHaveSetWords,
   } = store;
 
@@ -109,6 +110,21 @@ export const RoomActions = observer(function RoomActions() {
                 <Label className="text-muted">Стать зрителем</Label>
               </Dropdown.Item>
             ) : null}
+            <Dropdown.Item
+              textValue="Копировать код комнаты"
+              className="text-muted"
+              onPress={async () => {
+                try {
+                  await navigator.clipboard.writeText(room.roomCode);
+                  toast.success("Код комнаты скопирован");
+                } catch {
+                  toast.danger("Не удалось скопировать");
+                }
+              }}
+            >
+              <CopyIcon className="size-4 shrink-0 text-muted" />
+              <Label className="text-muted">Копировать код комнаты</Label>
+            </Dropdown.Item>
             <Dropdown.Section aria-label="Выход">
               <Dropdown.Item
                 textValue="Выйти"

@@ -7,7 +7,7 @@ import UserCard from "@/components/user-card";
 
 export const GameTable = observer<{ table: TRoomTable }>((props) => {
   const { table } = props;
-  const { userName, currentTableId, isPlaying, isMyTurn } = store;
+  const { userName, currentTableId, isPlaying, isMyTurn, isAdmin } = store;
 
   const { player, id, secret, typing, isGuessed } = table;
 
@@ -30,9 +30,11 @@ export const GameTable = observer<{ table: TRoomTable }>((props) => {
           return (
             <div className="flex flex-col gap-2">
               <Button onPress={() => store.takeTable(id)}>Занять стол</Button>
-              <Button variant="danger" onPress={() => store.deleteTable(id)}>
-                Удалить стол
-              </Button>
+              {isAdmin && (
+                <Button variant="danger" onPress={() => store.deleteTable(id)}>
+                  Удалить стол
+                </Button>
+              )}
             </div>
           );
         }

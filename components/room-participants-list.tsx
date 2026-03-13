@@ -3,7 +3,7 @@
 import { observer } from "mobx-react-lite";
 import { RoomUserCard } from "./room-user-card";
 import { Button, Popover } from "@heroui/react";
-import { Users as UsersIcon } from "lucide-react";
+import {  UsersIcon } from "lucide-react";
 import { store } from "@/store/store";
 
 export const RoomParticipantsList = observer(function RoomParticipantsList() {
