@@ -36,6 +36,11 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
       toast.danger(message);
     });
 
+    socket.on(SocketEvents.UserKicked, () => {
+      store.handleKicked();
+      toast.warning("Вас исключили из комнаты");
+    });
+
     socket.on(SocketEvents.ReciveMessage, (message) => {
       store.reciveMessage(message);
     });

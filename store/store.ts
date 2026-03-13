@@ -275,6 +275,22 @@ class Store {
     this.router?.push("/");
   }
 
+  /** Исключить участника из комнаты (только для админа). Вызывается при получении UserKicked — сброс комнаты и переход на главную. */
+  public handleKicked() {
+    this.room = undefined;
+    this.chat = this._getChatDefaultState();
+    this.router?.push("/");
+  }
+
+  public kickUser(targetUserName: string) {
+    if (this.room === undefined) return;
+
+    socket.emit(SocketEvents.KickUser, {
+      roomCode: this.room.roomCode,
+      targetUserName,
+    });
+  }
+
   public joinRoom() {
     const { roomCode } = this.loginForm;
     const { userName } = this;

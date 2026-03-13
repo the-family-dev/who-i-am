@@ -314,6 +314,46 @@ export function registerSocketHandlers(
     io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
   });
 
+  socket.on(SocketEvents.KickUser, (params) => {
+    const { roomCode, targetUserName } = params;
+
+    const room = roomService.rooms.get(roomCode);
+
+    if (room === undefined) return;
+
+    if (!isAdminSocket(room, socket.id)) {
+      io.to(socket.id).emit(
+        SocketEvents.AnyError,
+        "Только администратор может исключить участника",
+      );
+      return;
+    }
+
+    const targetSpectator = room.spectators.find(
+      (u) => u.name === targetUserName,
+    );
+    let targetSocketId: string | undefined;
+
+    if (targetSpectator) {
+      targetSocketId = targetSpectator.socketId;
+      room.spectators = room.spectators.filter((u) => u.name !== targetUserName);
+    } else {
+      const tableWithPlayer = room.tabels.find(
+        (t) => t.player?.name === targetUserName,
+      );
+      if (tableWithPlayer?.player) {
+        targetSocketId = tableWithPlayer.player.socketId;
+        tableWithPlayer.player = undefined;
+        tableWithPlayer.typing = undefined;
+      }
+    }
+
+    if (targetSocketId === undefined) return;
+
+    io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
+    io.to(targetSocketId).emit(SocketEvents.UserKicked);
+  });
+
   socket.on(SocketEvents.JoinRoom, (params) => {
     const { userName, roomCode } = params;
 

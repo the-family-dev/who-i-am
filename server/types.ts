@@ -22,6 +22,9 @@ export enum SocketEvents {
   NextTurn = "next-turn",
   RestartGame = "restart-game",
 
+  KickUser = "kick-user",
+  UserKicked = "user-kicked",
+
   UserNameExists = "user-name-exists",
 
   AnyError = "any-error",
@@ -130,6 +133,13 @@ export type ClientToServerEvents = {
   }) => void;
   [SocketEvents.NextTurn]: (roomCode: string) => void;
   [SocketEvents.RestartGame]: (roomCode: string) => void;
+  [SocketEvents.KickUser]: ({
+    roomCode,
+    targetUserName,
+  }: {
+    roomCode: string;
+    targetUserName: string;
+  }) => void;
 };
 
 export type ServerToClientEvents = {
@@ -139,6 +149,7 @@ export type ServerToClientEvents = {
   [SocketEvents.MyUserJoined]: (user: TUser) => void;
   [SocketEvents.UserReconnected]: (user: TUser) => void;
   [SocketEvents.RoomUpdated]: (room: TRoom) => void;
+  [SocketEvents.UserKicked]: () => void;
   [SocketEvents.WordGuessed]: () => void;
   [SocketEvents.AnyError]: (message: string) => void;
 };
