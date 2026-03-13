@@ -6,5 +6,5 @@
     "noEmit": false,
     "jsx": "react"
   },
-  "include": ["server/**/*.ts"]
+  "include": ["server/**/*.ts", "utils/**/*.ts"]
 }
