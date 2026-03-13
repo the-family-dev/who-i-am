@@ -23,5 +23,7 @@ app.prepare().then(() => {
     registerSocketHandlers(io, socket);
   });
 
-  httpServer.listen(port, () => {});
+  httpServer.listen(port, () => {
+    console.log(`Server: http://${hostname}:${port}`);
+  });
 });
