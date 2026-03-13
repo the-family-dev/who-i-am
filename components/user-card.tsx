@@ -3,7 +3,7 @@ import type { SpringOptions } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import { TUser } from "@/server/types";
-import { CrownIcon, WifiOff as WifiOffIcon } from "lucide-react";
+import { CrownIcon, WifiOffIcon } from "lucide-react";
 import { cardHeight, cardWidth } from "@/utils/constants";
 import { observer } from "mobx-react-lite";
 

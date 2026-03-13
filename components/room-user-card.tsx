@@ -3,9 +3,9 @@
 import { observer } from "mobx-react-lite";
 import { TUser } from "@/server/types";
 import {
-  Crown as CrownIcon,
-  UserX as UserXIcon,
-  WifiOff as WifiOffIcon,
+  CrownIcon,
+   UserXIcon,
+  WifiOffIcon,
 } from "lucide-react";
 import { Button, Surface } from "@heroui/react";
 import { store } from "@/store/store";
