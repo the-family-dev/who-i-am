@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# генерируется при сборке
+/public/build-info.json
+
 # production
 /build
 

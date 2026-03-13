@@ -5,6 +5,7 @@ import classNames from "classnames";
 import { GameHeader } from "@/components/game-header";
 import { DebugPanel } from "@/components/debug-panel";
 import { EmojiConfetti } from "@/components/emoji-confetti";
+import { AppFooter } from "@/components/app-footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,15 +19,18 @@ export default function RootLayout({
 }>) {
   return (
     <html className="dark h-full" lang="ru">
-      <body className={classNames("flex flex-col gap-8 h-full p-4 dark")}>
-        <GameHeader />
-        <div className="flex items-center justify-center w-full h-full">
-          {children}
+      <body className={"flex flex-col h-full p-4"}>
+        <div className="flex flex-col gap-8 h-full">
+          <GameHeader />
+          <div className="flex min-h-0 flex-1 items-center justify-center w-full">
+            {children}
+          </div>
+          <SocketEventsHandler />
+          <Toast.Provider />
+          <DebugPanel />
         </div>
-        <SocketEventsHandler />
-        <Toast.Provider />
-        <DebugPanel />
         <EmojiConfetti />
+        <AppFooter />
       </body>
     </html>
   );
