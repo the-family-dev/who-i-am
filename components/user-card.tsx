@@ -3,7 +3,7 @@ import type { SpringOptions } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import { TUser } from "@/server/types";
-import { CrownIcon, GlobeOffIcon } from "lucide-react";
+import { CrownIcon, WifiOff as WifiOffIcon } from "lucide-react";
 import { cardHeight, cardWidth } from "@/utils/constants";
 import { observer } from "mobx-react-lite";
 
@@ -154,7 +154,7 @@ export default observer(function UserCard({
         <motion.div className="absolute top-2 right-2 flex flex-row gap-2">
           {user.disconnected && (
             <motion.div className=" bg-white p-2 rounded-xl">
-              <GlobeOffIcon className=" size-5 text-slate-500" />
+              <WifiOffIcon className="size-5 text-slate-500" />
             </motion.div>
           )}
           {user.isAdmin && (

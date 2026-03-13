@@ -11,8 +11,6 @@ export const NameLabel = observer(() => {
 
   const router = useRouter();
 
-  console.log("NameLabel");
-
   if (userName === undefined) return;
 
   return (

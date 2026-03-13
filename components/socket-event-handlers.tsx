@@ -8,8 +8,6 @@ import { store } from "@/store/store";
 import { toast } from "@heroui/react";
 
 export const SocketEventsHandler = observer(function SocketEventsHandler() {
-  console.log("socket handler rendered");
-
   const router = useRouter();
   const pathname = usePathname();
 
@@ -22,15 +20,11 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
 
   useEffect(() => {
     socket.on(SocketEvents.RoomCreated, (room) => {
-      console.log(SocketEvents.RoomCreated, room);
-
       store.setRoom(room);
       router.push(`/game/${room.roomCode}`);
     });
 
     socket.on(SocketEvents.RoomUpdated, (room) => {
-      console.log(SocketEvents.RoomUpdated, room);
-
       store.setRoom(room);
     });
 
@@ -47,8 +41,6 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
     });
 
     socket.on(SocketEvents.UserJoined, (room) => {
-      console.log(SocketEvents.UserJoined, room);
-
       store.setRoom(room);
 
       router.push(`/game/${room.roomCode}`);
@@ -56,7 +48,6 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
 
     return () => {
       socket.removeAllListeners();
-      console.log("socket handler unmounted");
     };
   }, []);
 

@@ -4,7 +4,6 @@ import { cardHeight, cardWidth } from "../utils/constants";
 import { store } from "@/store/store";
 import { TRoomTable } from "@/server/types";
 import UserCard from "./user-card";
-import { toJS } from "mobx";
 
 export const GameTable = observer<{ table: TRoomTable }>((props) => {
   const { table } = props;
@@ -26,8 +25,6 @@ export const GameTable = observer<{ table: TRoomTable }>((props) => {
   const isTypingHere = typing !== undefined;
 
   const isTextareaDisabled = isSomeTyping && !isTypingHere;
-
-  console.log(toJS(table));
 
   return (
     <Surface

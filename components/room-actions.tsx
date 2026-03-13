@@ -2,17 +2,17 @@ import { store } from "@/store/store";
 import { Dropdown, Label } from "@heroui/react";
 import { observer } from "mobx-react-lite";
 import {
-  MoreVertical,
-  Play,
-  Square,
-  SkipForward,
-  RotateCw,
-  CheckCircle,
-  Eye,
-  LogOut,
-  Flag,
+  MoreVertical as MoreVerticalIcon,
+  Play as PlayIcon,
+  Square as SquareIcon,
+  SkipForward as SkipForwardIcon,
+  RotateCw as RotateCwIcon,
+  CheckCircle as CheckCircleIcon,
+  Eye as EyeIcon,
+  LogOut as LogOutIcon,
+  Flag as FlagIcon,
 } from "lucide-react";
-import { SpectatorsList } from "./spectators-list";
+import { RoomParticipantsList } from "./room-participants-list";
 import { GameStates } from "@/server/types";
 
 export const RoomActions = observer(function RoomActions() {
@@ -36,7 +36,7 @@ export const RoomActions = observer(function RoomActions() {
         aria-label="Menu"
         className="button button-md button--secondary button--icon-only data-[focus-visible=true]:status-focused"
       >
-        <MoreVertical className="size-6" />
+        <MoreVerticalIcon className="size-6" />
       </Dropdown.Trigger>
         <Dropdown.Popover placement="bottom end">
           <Dropdown.Menu aria-label="Действия комнаты">
@@ -48,7 +48,7 @@ export const RoomActions = observer(function RoomActions() {
                   isDisabled={!allPlayersHaveSetWords}
                   onPress={() => store.setRoomState(GameStates.Playing)}
                 >
-                  <Play className="size-4 shrink-0 text-success" />
+                  <PlayIcon className="size-4 shrink-0 text-success" />
                   <Label className="text-success">Начать игру</Label>
                 </Dropdown.Item>
                 <Dropdown.Item
@@ -56,7 +56,7 @@ export const RoomActions = observer(function RoomActions() {
                   className="text-warning"
                   onPress={() => store.setRoomState(GameStates.Idle)}
                 >
-                  <Square className="size-4 shrink-0 text-warning" />
+                  <SquareIcon className="size-4 shrink-0 text-warning" />
                   <Label className="text-warning">Завершить игру</Label>
                 </Dropdown.Item>
                 {isPlaying ? (
@@ -65,7 +65,7 @@ export const RoomActions = observer(function RoomActions() {
                     className="text-accent"
                     onPress={() => store.nextTurn()}
                   >
-                    <SkipForward className="size-4 shrink-0 text-accent" />
+                    <SkipForwardIcon className="size-4 shrink-0 text-accent" />
                     <Label className="text-accent">Следующий ход</Label>
                   </Dropdown.Item>
                 ) : null}
@@ -74,7 +74,7 @@ export const RoomActions = observer(function RoomActions() {
                   className="text-accent"
                   onPress={() => store.restartGame()}
                 >
-                  <RotateCw className="size-4 shrink-0 text-accent" />
+                  <RotateCwIcon className="size-4 shrink-0 text-accent" />
                   <Label className="text-accent">Рестарт игры</Label>
                 </Dropdown.Item>
               </Dropdown.Section>
@@ -85,7 +85,7 @@ export const RoomActions = observer(function RoomActions() {
                 className="text-accent"
                 onPress={() => store.nextTurn()}
               >
-                <Flag className="size-4 shrink-0 text-accent" />
+                <FlagIcon className="size-4 shrink-0 text-accent" />
                 <Label className="text-accent">Закончить ход</Label>
               </Dropdown.Item>
             ) : null}
@@ -95,7 +95,7 @@ export const RoomActions = observer(function RoomActions() {
                 className="text-success"
                 onPress={() => store.makeGuess()}
               >
-                <CheckCircle className="size-4 shrink-0 text-success" />
+                <CheckCircleIcon className="size-4 shrink-0 text-success" />
                 <Label className="text-success">Слово угадано</Label>
               </Dropdown.Item>
             ) : null}
@@ -105,7 +105,7 @@ export const RoomActions = observer(function RoomActions() {
                 className="text-muted"
                 onPress={() => store.becomeSpectator()}
               >
-                <Eye className="size-4 shrink-0 text-secondary-foreground" />
+                <EyeIcon className="size-4 shrink-0 text-secondary-foreground" />
                 <Label className="text-muted">Стать зрителем</Label>
               </Dropdown.Item>
             ) : null}
@@ -116,14 +116,14 @@ export const RoomActions = observer(function RoomActions() {
                 isDisabled={isPlaying}
                 onPress={() => store.leaveRoom()}
               >
-                <LogOut className="size-4 shrink-0 text-danger" />
+                <LogOutIcon className="size-4 shrink-0 text-danger" />
                 <Label className="text-danger">Выйти</Label>
               </Dropdown.Item>
             </Dropdown.Section>
           </Dropdown.Menu>
         </Dropdown.Popover>
       </Dropdown>
-      <SpectatorsList />
+      <RoomParticipantsList />
     </div>
   );
 });

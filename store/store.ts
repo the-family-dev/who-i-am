@@ -1,5 +1,5 @@
 "use-client";
-import { makeAutoObservable, toJS } from "mobx";
+import { makeAutoObservable } from "mobx";
 import {
   GameStates,
   SocketEvents,
@@ -159,15 +159,12 @@ class Store {
   public requestStoredName() {
     const name = this._nameStorage.get();
 
-    console.log(toJS(this.pathname));
-
     if (name === undefined) {
       this.fromPath = this.pathname;
       this.router?.push("/register");
     }
 
     this.userName = name;
-    console.log("requestStoredName");
   }
 
   public register() {
@@ -263,7 +260,6 @@ class Store {
   // }
 
   public leaveRoom() {
-    console.log("leaveRoom");
     if (this.room === undefined) return;
 
     socket.emit(SocketEvents.LeaveRoom, this.room.roomCode);
@@ -292,8 +288,6 @@ class Store {
   }
 
   public joinRoomByLink(roomCode?: string) {
-    console.log("joinByLink");
-
     if (this.room) return;
 
     const { userName } = this;

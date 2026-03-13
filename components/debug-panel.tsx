@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Popover } from "@heroui/react";
-import { Bug } from "lucide-react";
+import { Bug as BugIcon } from "lucide-react";
 import { store } from "@/store/store";
 
 
@@ -21,7 +21,7 @@ export function DebugPanel() {
           className="opacity-60 hover:opacity-100"
           aria-label="Открыть меню дебага"
         >
-          <Bug size={20} />
+          <BugIcon size={20} />
         </Button>
         <Popover.Content placement="top" className="min-w-48">
           <Popover.Dialog>
