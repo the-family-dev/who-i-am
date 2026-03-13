@@ -70,6 +70,10 @@ class Store {
     );
   }
 
+  get currentTableId() {
+    return this.room?.currentTableId;
+  }
+
   get currentTable() {
     if (this.room === undefined) return undefined;
     const { currentTableId } = this.room;

@@ -1,30 +1,21 @@
-import { Button, Surface } from "@heroui/react";
 import { observer } from "mobx-react-lite";
-import { cardHeight, cardWidth } from "../utils/constants";
+import { Button, Surface } from "@heroui/react";
+import { cardHeight, cardWidth } from "@/utils/constants";
 import { store } from "@/store/store";
 import { TRoomTable } from "@/server/types";
-import UserCard from "./user-card";
+import UserCard from "@/components/user-card";
 
 export const GameTable = observer<{ table: TRoomTable }>((props) => {
   const { table } = props;
-  const { userName, room, isPlaying } = store;
+  const { userName, currentTableId, isPlaying, isMyTurn } = store;
 
   const { player, id, secret, typing, isGuessed } = table;
 
-  const isCurrent =
-    room !== undefined && room.currentTableId !== undefined
-      ? room.currentTableId === id
-      : false;
-  const isMyTurn =
-    isCurrent && player !== undefined && player.name === userName;
+  const isCurrent = currentTableId !== undefined && currentTableId === id;
+  const isMyTurnHere = isCurrent && isMyTurn;
 
-  const isSomeTyping =
-    room !== undefined
-      ? room.tabels.some((t) => t.typing !== undefined)
-      : false;
-  const isTypingHere = typing !== undefined;
-
-  const isTextareaDisabled = isSomeTyping && !isTypingHere;
+  // Блокируем ввод только в этой карточке, если в ней уже печатает другой пользователь
+  const isTextareaDisabled = typing !== undefined && typing !== userName;
 
   return (
     <Surface
@@ -59,7 +50,7 @@ export const GameTable = observer<{ table: TRoomTable }>((props) => {
             onFocus={() => store.setTableTyping(id)}
             onConfirm={(value) => store.setTableSecret(id, value)}
             isCurrent={isCurrent}
-            isMyTurn={isMyTurn}
+            isMyTurn={isMyTurnHere}
             isGuessed={isGuessed}
           />
         );
