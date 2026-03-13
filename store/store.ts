@@ -97,6 +97,65 @@ class Store {
     return this.room.state === GameStates.Playing;
   }
 
+  /** Столы с игроками (для индикатора отгадываний) */
+  get playerTables() {
+    if (this.room === undefined) return [];
+    return this.room.tabels.filter((t) => t.player != null);
+  }
+
+  get guessedCount() {
+    return this.playerTables.filter((t) => t.isGuessed).length;
+  }
+
+  get totalPlayerCount() {
+    return this.playerTables.length;
+  }
+
+  /** Сколько игроков загадали (ввели) слово */
+  get wordsSetCount() {
+    return this.playerTables.filter(
+      (t) => typeof t.secret === "string" && t.secret.trim() !== "",
+    ).length;
+  }
+
+  /** Все ли игроки загадали слово (можно начинать игру) */
+  get allPlayersHaveSetWords() {
+    const total = this.totalPlayerCount;
+    return total > 0 && this.wordsSetCount === total;
+  }
+
+  get isAdmin() {
+    if (this.room === undefined || this.userName === undefined) return false;
+    const { room, userName } = this;
+    return (
+      room.spectators.some(
+        (user) => user.name === userName && user.isAdmin === true,
+      ) ||
+      room.tabels.some((table) => {
+        const player = table.player;
+        return (
+          player !== undefined &&
+          player.name === userName &&
+          player.isAdmin === true
+        );
+      })
+    );
+  }
+
+  get canConfirmGuess() {
+    return (
+      this.isPlaying &&
+      this.isPlayer &&
+      !!this.currentPlayerName &&
+      !this.isMyTurn
+    );
+  }
+
+  get canBecomeSpectator() {
+    if (this.room === undefined) return false;
+    return this.isPlayer && this.room.state === GameStates.Idle;
+  }
+
   public requestStoredName() {
     const name = this._nameStorage.get();
 
