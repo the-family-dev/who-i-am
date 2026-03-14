@@ -65,7 +65,7 @@ export type TRoomTable = {
 export type TRoom = {
   roomCode: string; // uniq
   spectators: TUser[];
-  tabels: TRoomTable[];
+  tables: TRoomTable[];
   state: GameStates;
   currentTableId?: string;
 };

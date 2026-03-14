@@ -17,13 +17,13 @@ class RoomService {
     const room: TRoom = {
       roomCode: generateCode(8),
       spectators: [],
-      tabels: [],
+      tables: [],
       state: GameStates.Idle,
     };
 
     const table = this.generateTable();
 
-    room.tabels.push(table);
+    room.tables.push(table);
 
     room.spectators.push(user);
 

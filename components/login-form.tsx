@@ -42,7 +42,7 @@ export const LoginForm = observer(() => {
       >
         <Tabs.ListContainer>
           <Tabs.List>
-            <Tabs.Tab id={LoginType.Join}>Присоедениться</Tabs.Tab>
+            <Tabs.Tab id={LoginType.Join}>Присоединиться</Tabs.Tab>
             <Tabs.Tab id={LoginType.Create}>Создать игру</Tabs.Tab>
           </Tabs.List>
         </Tabs.ListContainer>
@@ -66,7 +66,7 @@ export const LoginForm = observer(() => {
           className={"w-full"}
           type="submit"
         >
-          {type === LoginType.Join ? "Присоедениться" : "Создать"}
+          {type === LoginType.Join ? "Присоединиться" : "Создать"}
         </Button>
       </Form>
     </Surface>

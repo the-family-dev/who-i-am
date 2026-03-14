@@ -32,7 +32,12 @@ export default observer(function Game() {
 
   if (room === undefined) {
     return (
-      <div className="flex flex-col gap-4 w-50">
+      <div className="flex flex-col gap-4 w-50 max-w-sm">
+        {code ? (
+          <p className="text-default-500 text-lg text-center">
+            Комната <span className="font-mono font-semibold text-foreground">{code}</span>
+          </p>
+        ) : null}
         <Button className={"w-full"} onPress={() => store.joinRoomByLink(code)}>
           Войти
         </Button>
@@ -41,7 +46,7 @@ export default observer(function Game() {
           className={"w-full"}
           onPress={() => store.router?.push("/")}
         >
-          На глвную
+          На главную
         </Button>
       </div>
     );
@@ -50,7 +55,7 @@ export default observer(function Game() {
   return (
     <div className="flex flex-row gap-4 h-full w-full justify-between relative">
       <div className="flex flex-row gap-8 flex-wrap w-full">
-        {room.tabels.map((table) => (
+        {room.tables.map((table) => (
           <GameTable key={table.id} table={table} />
         ))}
         {isPlaying ? null : <AddTableButton />}

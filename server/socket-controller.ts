@@ -32,7 +32,7 @@ export function registerSocketHandlers(
     room.state = state;
 
     if (state === GameStates.Playing) {
-      const firstTable = room.tabels.find((t) => t.player && !t.isGuessed);
+      const firstTable = room.tables.find((t) => t.player && !t.isGuessed);
 
       room.currentTableId = firstTable ? firstTable.id : undefined;
     } else {
@@ -57,7 +57,7 @@ export function registerSocketHandlers(
       return;
     }
 
-    room.tabels = room.tabels.filter((t) => t.id !== tableId);
+    room.tables = room.tables.filter((t) => t.id !== tableId);
 
     io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
   });
@@ -77,7 +77,7 @@ export function registerSocketHandlers(
 
     const table = roomService.generateTable();
 
-    room.tabels.push(table);
+    room.tables.push(table);
 
     io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
   });
@@ -89,7 +89,7 @@ export function registerSocketHandlers(
 
     if (room === undefined) return;
 
-    const targetTable = room.tabels.find((t) => t.id === tableId);
+    const targetTable = room.tables.find((t) => t.id === tableId);
 
     if (targetTable === undefined) return;
 
@@ -111,7 +111,7 @@ export function registerSocketHandlers(
 
     if (room === undefined) return;
 
-    const alreadyPlayer = room.tabels.find(
+    const alreadyPlayer = room.tables.find(
       (s) => s.player?.name === userName,
     );
 
@@ -127,7 +127,7 @@ export function registerSocketHandlers(
 
     if (user === undefined) return;
 
-    const table = room.tabels.find((t) => t.id === tableId);
+    const table = room.tables.find((t) => t.id === tableId);
 
     if (table === undefined) return;
 
@@ -168,7 +168,7 @@ export function registerSocketHandlers(
 
     let user: TUser | undefined = undefined;
 
-    for (const table of room.tabels) {
+    for (const table of room.tables) {
       if (table.player === undefined) continue;
 
       if (table.player.name === userName) {
@@ -200,7 +200,7 @@ export function registerSocketHandlers(
 
     if (currentTableId === undefined) return;
 
-    const table = room.tabels.find((t) => t.id === currentTableId);
+    const table = room.tables.find((t) => t.id === currentTableId);
 
     if (table === undefined || table.player === undefined) return;
 
@@ -272,7 +272,7 @@ export function registerSocketHandlers(
 
     if (room.state !== GameStates.Playing) return;
 
-    const currentTable = room.tabels.find(
+    const currentTable = room.tables.find(
       (t) => t.id === room.currentTableId,
     );
     const isCurrentPlayer =
@@ -314,7 +314,7 @@ export function registerSocketHandlers(
     room.state = GameStates.Idle;
     room.currentTableId = undefined;
 
-    for (const table of room.tabels) {
+    for (const table of room.tables) {
       table.secret = "";
       table.typing = undefined;
       table.isGuessed = false;
@@ -336,7 +336,7 @@ export function registerSocketHandlers(
 
     room.spectators = users;
 
-    const table = room.tabels.find((t) => t.player?.socketId === socket.id);
+    const table = room.tables.find((t) => t.player?.socketId === socket.id);
 
     if (table) {
       table.player = undefined;
@@ -371,7 +371,7 @@ export function registerSocketHandlers(
       targetSocketId = targetSpectator.socketId;
       room.spectators = room.spectators.filter((u) => u.name !== targetUserName);
     } else {
-      const tableWithPlayer = room.tabels.find(
+      const tableWithPlayer = room.tables.find(
         (t) => t.player?.name === targetUserName,
       );
       if (tableWithPlayer?.player) {
@@ -402,7 +402,7 @@ export function registerSocketHandlers(
 
     socket.join(room.roomCode);
 
-    const existUser = room.tabels.find(
+    const existUser = room.tables.find(
       (table) => table.player?.name === userName,
     )?.player;
     const existSpectator = room.spectators.find(
@@ -467,7 +467,7 @@ export function registerSocketHandlers(
     const room = Array.from(roomService.rooms.values()).find(
       (room) =>
         room.spectators.find((user) => user.socketId === socket.id) ||
-        room.tabels.find((table) => table.player?.socketId === socket.id),
+        room.tables.find((table) => table.player?.socketId === socket.id),
     );
 
     if (room === undefined) return;
@@ -482,7 +482,7 @@ export function registerSocketHandlers(
       );
     }
 
-    const player = room.tabels.find(
+    const player = room.tables.find(
       (table) => table.player?.socketId === socket.id,
     )?.player;
 

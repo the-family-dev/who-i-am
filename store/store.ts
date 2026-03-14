@@ -65,7 +65,7 @@ class Store {
   get isPlayer() {
     if (this.room === undefined) return false;
 
-    return this.room.tabels.some(
+    return this.room.tables.some(
       (table) => table.player?.name === this.userName,
     );
   }
@@ -79,7 +79,7 @@ class Store {
     const { currentTableId } = this.room;
     if (currentTableId === undefined) return undefined;
 
-    return this.room.tabels.find((t) => t.id === currentTableId);
+    return this.room.tables.find((t) => t.id === currentTableId);
   }
 
   get currentPlayerName() {
@@ -104,7 +104,7 @@ class Store {
   /** Столы с игроками (для индикатора отгадываний) */
   get playerTables() {
     if (this.room === undefined) return [];
-    return this.room.tabels.filter((t) => t.player != null);
+    return this.room.tables.filter((t) => t.player != null);
   }
 
   get guessedCount() {
@@ -135,7 +135,7 @@ class Store {
       room.spectators.some(
         (user) => user.name === userName && user.isAdmin === true,
       ) ||
-      room.tabels.some((table) => {
+      room.tables.some((table) => {
         const player = table.player;
         return (
           player !== undefined &&

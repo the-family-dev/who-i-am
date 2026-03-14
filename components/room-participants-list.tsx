@@ -11,7 +11,7 @@ export const RoomParticipantsList = observer(function RoomParticipantsList() {
 
   if (room === undefined) return null;
 
-  const players = room.tabels
+  const players = room.tables
     .map((t) => t.player)
     .filter((p): p is NonNullable<typeof p> => p !== undefined);
   const spectators = room.spectators;

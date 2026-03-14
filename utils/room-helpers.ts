@@ -7,7 +7,7 @@ export function isAdminSocket(room: TRoom, socketId: string): boolean {
 
   if (spectatorAdmin) return true;
 
-  for (const table of room.tabels) {
+  for (const table of room.tables) {
     if (
       table.player &&
       table.player.socketId === socketId &&
@@ -21,9 +21,9 @@ export function isAdminSocket(room: TRoom, socketId: string): boolean {
 }
 
 export function getNextTableId(room: TRoom): string | undefined {
-  if (room.tabels.length === 0) return undefined;
+  if (room.tables.length === 0) return undefined;
 
-  const tables = room.tabels;
+  const tables = room.tables;
   const currentId = room.currentTableId;
   const startIndex = currentId
     ? tables.findIndex((t) => t.id === currentId)

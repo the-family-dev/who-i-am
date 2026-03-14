@@ -52,16 +52,15 @@ export const RoomActions = observer(function RoomActions() {
   const otherSection = (
     <Dropdown.Section aria-label="Прочее">
       <Header>Прочее</Header>
-      {canBecomeSpectator ? (
-        <Dropdown.Item
-          textValue="Стать зрителем"
-          className="text-muted"
-          onPress={() => store.becomeSpectator()}
-        >
-          <EyeIcon className="size-4 shrink-0 text-secondary-foreground" />
-          <Label className="text-muted">Стать зрителем</Label>
-        </Dropdown.Item>
-      ) : null}
+      <Dropdown.Item
+        textValue="Стать зрителем"
+        className="text-muted"
+        isDisabled={!canBecomeSpectator}
+        onPress={() => store.becomeSpectator()}
+      >
+        <EyeIcon className="size-4 shrink-0 text-secondary-foreground" />
+        <Label className="text-muted">Стать зрителем</Label>
+      </Dropdown.Item>
       <Dropdown.Item
         textValue="Копировать код комнаты"
         className="text-muted"
@@ -103,7 +102,7 @@ export const RoomActions = observer(function RoomActions() {
       <Dropdown.Item
         textValue="Начать игру"
         className="text-success"
-        isDisabled={!allPlayersHaveSetWords}
+        isDisabled={!allPlayersHaveSetWords || isPlaying}
         onPress={() => store.setRoomState(GameStates.Playing)}
       >
         <PlayIcon className="size-4 shrink-0 text-success" />

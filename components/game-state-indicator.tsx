@@ -3,14 +3,17 @@
 import { observer } from "mobx-react-lite";
 import { Chip, Surface } from "@heroui/react";
 import { store } from "@/store/store";
+import { gameStateLabels } from "@/utils/constants";
 
 export const GameStateIndicator = observer(function GameStateIndicator() {
   const { room, isPlaying } = store;
 
   if (room === undefined) return null;
 
+  const { state } = room
+
   const label = "Состояние игры";
-  const value = isPlaying ? "Игра" : "Ожидание";
+  const value = gameStateLabels[state] ?? "Неизвестно";
   const chipColor = isPlaying ? "success" : "default";
 
   return (
