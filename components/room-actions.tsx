@@ -15,7 +15,7 @@ import {
   LinkIcon,
 } from "lucide-react";
 import { toast } from "@heroui/react";
-import { RoomParticipantsList } from "./room-participants-list";
+import { RoomParticipantsList } from "@/components/room-participants-list";
 import { GameStates } from "@/server/types";
 
 export const RoomActions = observer(function RoomActions() {

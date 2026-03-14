@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { SocketEventsHandler } from "@/components/socket-event-handlers";
 import { Toast } from "@heroui/react";
-import classNames from "classnames";
 import { GameHeader } from "@/components/game-header";
 import { DebugPanel } from "@/components/debug-panel";
 import { EmojiConfetti } from "@/components/emoji-confetti";

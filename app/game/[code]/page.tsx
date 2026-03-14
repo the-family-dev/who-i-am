@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { Chat } from "@/components/chat";
 import { observer } from "mobx-react-lite";
 import { useParams } from "next/navigation";
@@ -15,9 +14,18 @@ export default observer(function Game() {
 
   if (userName === undefined) {
     return (
-      <div className="flex flex-col ga-2">
-        Нет имени
-        <Link href={"/register"}>Ввести имя</Link>
+      <div className="flex flex-1 items-center justify-center p-6">
+        <div className="flex flex-col items-center gap-4 text-center max-w-sm">
+          <p className="text-default-500 text-sm">
+            Чтобы участвовать в игре, нужно представиться
+          </p>
+          <Button
+            className="min-w-40"
+            onPress={() => store.router?.push("/register")}
+          >
+            Ввести имя
+          </Button>
+        </div>
       </div>
     );
   }
