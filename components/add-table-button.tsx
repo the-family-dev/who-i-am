@@ -2,8 +2,10 @@ import { Button, Surface } from "@heroui/react";
 import { observer } from "mobx-react-lite";
 import { cardHeight, cardWidth } from "../utils/constants";
 import { store } from "../store/store";
+import { useTranslation } from "react-i18next";
 
 export const AddTableButton = observer(function AddTableButton() {
+  const { t } = useTranslation();
   if (!store.isAdmin) return null;
 
   return (
@@ -14,7 +16,7 @@ export const AddTableButton = observer(function AddTableButton() {
         height: cardHeight,
       }}
     >
-      <Button onPress={() => store.addTable()}>Добавить стол</Button>
+      <Button onPress={() => store.addTable()}>{t("table.add")}</Button>
     </Surface>
   );
 });

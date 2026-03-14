@@ -4,10 +4,12 @@ import { cardHeight, cardWidth } from "@/utils/constants";
 import { store } from "@/store/store";
 import { TRoomTable } from "@/server/types";
 import UserCard from "@/components/user-card";
+import { useTranslation } from "react-i18next";
 
 export const GameTable = observer<{ table: TRoomTable }>((props) => {
   const { table } = props;
   const { userName, currentTableId, isPlaying, isMyTurn, isAdmin } = store;
+  const { t } = useTranslation();
 
   const { player, id, secret, typing, isGuessed } = table;
 
@@ -29,10 +31,10 @@ export const GameTable = observer<{ table: TRoomTable }>((props) => {
         if (player === undefined) {
           return (
             <div className="flex flex-col gap-2">
-              <Button onPress={() => store.takeTable(id)}>Занять стол</Button>
+              <Button onPress={() => store.takeTable(id)}>{t("table.take")}</Button>
               {isAdmin && (
                 <Button variant="danger" onPress={() => store.deleteTable(id)}>
-                  Удалить стол
+                  {t("table.delete")}
                 </Button>
               )}
             </div>

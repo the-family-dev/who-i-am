@@ -1,15 +1,12 @@
 "use client";
 
 import { store } from "@/store/store";
-import { Button, Surface } from "@heroui/react";
-import { EditIcon, HomeIcon } from "lucide-react";
+import { Surface } from "@heroui/react";
 import { observer } from "mobx-react-lite";
-import { useRouter } from "next/navigation";
 
 export const NameLabel = observer(() => {
   const { userName } = store;
 
-  const router = useRouter();
 
   if (userName === undefined) return;
 

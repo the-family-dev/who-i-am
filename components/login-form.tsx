@@ -1,5 +1,4 @@
 "use client";
-
 import { observer } from "mobx-react-lite";
 import {
   Button,
@@ -11,10 +10,12 @@ import {
   TextField,
 } from "@heroui/react";
 import { LoginType, store } from "@/store/store";
+import { useTranslation } from "react-i18next";
 
 export const LoginForm = observer(() => {
   const { userName, loginForm } = store;
   const { roomCode, type } = loginForm;
+  const { t } = useTranslation();
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,7 +33,7 @@ export const LoginForm = observer(() => {
       variant="transparent"
       className="w-120 rounded-3xl border p-6 flex flex-col gap-4"
     >
-      <div className="text-3xl font-bold text-center pb-4">Кто я</div>
+      <div className="text-3xl font-bold text-center pb-4">{t("login.title")}</div>
       <Tabs
         onSelectionChange={(key) =>
           store.setLoginFormField("type", key as LoginType)
@@ -42,21 +43,21 @@ export const LoginForm = observer(() => {
       >
         <Tabs.ListContainer>
           <Tabs.List>
-            <Tabs.Tab id={LoginType.Join}>Присоединиться</Tabs.Tab>
-            <Tabs.Tab id={LoginType.Create}>Создать игру</Tabs.Tab>
+            <Tabs.Tab id={LoginType.Join}>{t("login.join")}</Tabs.Tab>
+            <Tabs.Tab id={LoginType.Create}>{t("login.create")}</Tabs.Tab>
           </Tabs.List>
         </Tabs.ListContainer>
       </Tabs>
       <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
         {type === LoginType.Join ? (
           <TextField variant="secondary" name="name" type="text">
-            <Label>Код комнаты</Label>
+            <Label>{t("login.roomCode")}</Label>
             <Input
               value={roomCode}
               onChange={(e) =>
                 store.setLoginFormField("roomCode", e.target.value)
               }
-              placeholder="Код комнаты"
+              placeholder={t("login.roomCodePlaceholder")}
               variant="secondary"
             />
           </TextField>
@@ -66,7 +67,7 @@ export const LoginForm = observer(() => {
           className={"w-full"}
           type="submit"
         >
-          {type === LoginType.Join ? "Присоединиться" : "Создать"}
+          {type === LoginType.Join ? t("login.joinSubmit") : t("login.createSubmit")}
         </Button>
       </Form>
     </Surface>

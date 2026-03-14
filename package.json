@@ -16,6 +16,7 @@
     "@heroui/react": "^3.0.0-beta.7",
     "@heroui/styles": "^3.0.0-beta.7",
     "classnames": "^2.5.1",
+    "i18next": "^25.8.18",
     "lucide-react": "^0.575.0",
     "mobx": "^6.15.0",
     "mobx-react-lite": "^4.1.1",
@@ -23,6 +24,7 @@
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-i18next": "^16.5.8",
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3",
     "ts-node": "^10.9.2"

@@ -4,9 +4,11 @@ import { observer } from "mobx-react-lite";
 import { Chip, Surface } from "@heroui/react";
 import { store } from "@/store/store";
 import { GameStates } from "@/server/types";
+import { useTranslation } from "react-i18next";
 
 export const WordsSetIndicator = observer(function WordsSetIndicator() {
   const { room, wordsSetCount, totalPlayerCount } = store;
+  const { t } = useTranslation();
 
   if (
     room === undefined ||
@@ -22,7 +24,7 @@ export const WordsSetIndicator = observer(function WordsSetIndicator() {
   return (
     <Surface className="mt-1 px-3 py-1.5 rounded-lg flex flex-col gap-1 min-w-[140px]">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs text-neutral-400">Загадано слов</span>
+        <span className="text-xs text-neutral-400">{t("wordsSet.label")}</span>
         <Chip size="sm" variant="soft" color="default">
           {wordsSetCount} из {totalPlayerCount}
         </Chip>
@@ -33,7 +35,7 @@ export const WordsSetIndicator = observer(function WordsSetIndicator() {
         aria-valuenow={wordsSetCount}
         aria-valuemin={0}
         aria-valuemax={totalPlayerCount}
-        aria-label={`Загадано слов ${wordsSetCount} из ${totalPlayerCount}`}
+        aria-label={t("wordsSet.aria", { count: wordsSetCount, total: totalPlayerCount })}
       >
         <div
           className="h-full bg-accent rounded-full transition-all duration-300 ease-out"

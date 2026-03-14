@@ -5,9 +5,11 @@ import { observer } from "mobx-react-lite";
 import { FormEvent, useEffect, useRef } from "react";
 import { TMessage } from "@/server/types";
 import classNames from "classnames";
+import { useTranslation } from "react-i18next";
 
 export const Chat = observer(() => {
   const { inputMessage, messages } = store.chat;
+  const { t } = useTranslation();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,7 +31,7 @@ export const Chat = observer(() => {
       variant="transparent"
       className="rounded border p-4 flex flex-col gap-4 w-75 shrink-0 h-[75vh]"
     >
-      <div>Чат</div>
+      <div>{t("chat.title")}</div>
       <ScrollShadow className="h-full" hideScrollBar>
         <div className="flex flex-col gap-2 flex-1 justify-end">
           {messages.map((message, index) => {
@@ -43,10 +45,10 @@ export const Chat = observer(() => {
         <Input
           name="message"
           className={"w-full"}
-          aria-label="Сообщение"
+          aria-label={t("chat.messageAria")}
           value={inputMessage}
           onChange={(e) => store.setChatMessage(e.target.value)}
-          placeholder="Сообщение"
+          placeholder={t("chat.placeholder")}
           variant="secondary"
           maxLength={50}
         />

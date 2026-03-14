@@ -2,9 +2,11 @@
 import { store } from "@/store/store";
 import { Button, Input, Surface } from "@heroui/react";
 import { observer } from "mobx-react-lite";
+import { useTranslation } from "react-i18next";
 
 export default observer(function Register() {
   const { userName } = store;
+  const { t } = useTranslation();
 
   const trimmedName = userName?.trim() ?? "";
   const isInvalid = trimmedName === "";
@@ -28,15 +30,15 @@ export default observer(function Register() {
             aria-label="name"
             aria-invalid={isInvalid}
             className="w-full"
-            placeholder="Введите имя"
+            placeholder={t("register.placeholder")}
             maxLength={20}
           />
           {isInvalid ? (
-            <p className="text-danger text-sm">Введите имя</p>
+            <p className="text-danger text-sm">{t("register.errorEmpty")}</p>
           ) : null}
         </div>
         <Button type="submit" className="w-full" isDisabled={isInvalid}>
-          Сохранить
+          {t("common.save")}
         </Button>
       </form>
     </Surface>

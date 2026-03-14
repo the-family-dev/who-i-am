@@ -4,26 +4,25 @@ import { observer } from "mobx-react-lite";
 import { useParams } from "next/navigation";
 import { store } from "@/store/store";
 import { Button } from "@heroui/react";
-import { GameTable } from "../../../components/game-table";
-import { AddTableButton } from "../../../components/add-table-button";
+import { GameTable } from "@/components/game-table";
+import { AddTableButton } from "@/components/add-table-button";
+import { useTranslation } from "react-i18next";
 
 export default observer(function Game() {
   const { userName, room, isPlaying } = store;
-
+  const { t } = useTranslation();
   const { code } = useParams<{ code?: string }>();
 
   if (userName === undefined) {
     return (
       <div className="flex flex-1 items-center justify-center p-6">
         <div className="flex flex-col items-center gap-4 text-center max-w-sm">
-          <p className="text-default-500 text-sm">
-            Чтобы участвовать в игре, нужно представиться
-          </p>
+          <p className="text-default-500 text-sm">{t("game.needName")}</p>
           <Button
             className="min-w-40"
             onPress={() => store.router?.push("/register")}
           >
-            Ввести имя
+            {t("game.enterName")}
           </Button>
         </div>
       </div>
@@ -35,18 +34,19 @@ export default observer(function Game() {
       <div className="flex flex-col gap-4 w-50 max-w-sm">
         {code ? (
           <p className="text-default-500 text-lg text-center">
-            Комната <span className="font-mono font-semibold text-foreground">{code}</span>
+            {t("game.roomLabel")}{" "}
+            <span className="font-mono font-semibold text-foreground">{code}</span>
           </p>
         ) : null}
         <Button className={"w-full"} onPress={() => store.joinRoomByLink(code)}>
-          Войти
+          {t("common.enter")}
         </Button>
         <Button
           variant="secondary"
           className={"w-full"}
           onPress={() => store.router?.push("/")}
         >
-          На главную
+          {t("game.toHome")}
         </Button>
       </div>
     );

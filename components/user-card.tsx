@@ -6,6 +6,7 @@ import { TUser } from "@/server/types";
 import { CrownIcon, WifiOffIcon } from "lucide-react";
 import { cardHeight, cardWidth } from "@/utils/constants";
 import { observer } from "mobx-react-lite";
+import { useTranslation } from "react-i18next";
 
 interface UserCardProps {
   height?: React.CSSProperties["height"];
@@ -45,6 +46,7 @@ export default observer(function UserCard({
   isMyTurn,
   isGuessed,
 }: UserCardProps) {
+  const { t } = useTranslation();
   const ref = useRef<HTMLElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -147,7 +149,7 @@ export default observer(function UserCard({
 
         {isCurrent && (
           <motion.div className="absolute top-2 left-2 bg-accent text-xs px-2 py-1 rounded">
-            {isMyTurn ? "Ваш ход" : `Ход: ${user.name}`}
+            {isMyTurn ? t("userCard.yourTurn") : t("userCard.turn", { name: user.name })}
           </motion.div>
         )}
 
@@ -171,10 +173,10 @@ export default observer(function UserCard({
         <motion.div className="absolute left-1/2 bottom-44 -translate-x-1/2">
           {(() => {
             if (typingUserName !== undefined) {
-              const name = typingUserName || "Игрок";
+              const name = typingUserName || t("userCard.player");
               return (
                 <div className="self-center text-default text-xl">
-                  {`${name} печатает...`}
+                  {t("userCard.typing", { name })}
                 </div>
               );
             }
@@ -185,7 +187,7 @@ export default observer(function UserCard({
               }
 
               return (
-                <div className="self-center text-default text-xl">{"???"}</div>
+                <div className="self-center text-default text-xl">{t("userCard.hiddenWord")}</div>
               );
             }
 
@@ -207,7 +209,7 @@ export default observer(function UserCard({
 
         {isGuessed ? (
           <motion.div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-success text-xs px-2 py-1 rounded">
-            Слово отгадано
+            {t("userCard.guessed")}
           </motion.div>
         ) : null}
       </motion.div>

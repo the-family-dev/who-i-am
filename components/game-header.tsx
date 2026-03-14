@@ -10,7 +10,9 @@ export const GameHeader = observer(() => {
 
   return (
     <div className="flex flex-row items-end justify-between w-full h-fit gap-4">
-      <NameLabel />
+      <div className="flex flex-row items-center gap-3">
+        <NameLabel />
+      </div>
       <div className="flex flex-col items-center gap-1 flex-1">
         {room ? <RoomStateIndicators /> : null}
       </div>

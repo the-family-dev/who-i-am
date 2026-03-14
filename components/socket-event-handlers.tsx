@@ -6,10 +6,12 @@ import { SocketEvents } from "@/server/types";
 import { socket } from "@/lib/socket";
 import { store } from "@/store/store";
 import { toast } from "@heroui/react";
+import { useTranslation } from "react-i18next";
 
 export const SocketEventsHandler = observer(function SocketEventsHandler() {
   const router = useRouter();
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   useLayoutEffect(() => {
     store.setRouter(router);
@@ -38,7 +40,7 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
 
     socket.on(SocketEvents.UserKicked, () => {
       store.handleKicked();
-      toast.warning("Вас исключили из комнаты");
+      toast.warning(t("toast.kicked"));
     });
 
     socket.on(SocketEvents.ReciveMessage, (message) => {
@@ -54,7 +56,7 @@ export const SocketEventsHandler = observer(function SocketEventsHandler() {
     return () => {
       socket.removeAllListeners();
     };
-  }, []);
+  }, [t]);
 
   return null;
 });

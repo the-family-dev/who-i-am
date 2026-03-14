@@ -37,7 +37,7 @@ export async function BuildInfo() {
     <span
       className="text-xs text-neutral-500"
     >
-      Обновлено: {formatBuildTime(buildTime)}
+      updated: {formatBuildTime(buildTime)}
     </span>
   );
 }
