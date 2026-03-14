@@ -265,6 +265,39 @@ export function registerSocketHandlers(
     io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
   });
 
+  socket.on(SocketEvents.FinishTurn, (roomCode) => {
+    const room = roomService.rooms.get(roomCode);
+
+    if (room === undefined) return;
+
+    if (room.state !== GameStates.Playing) return;
+
+    const currentTable = room.tabels.find(
+      (t) => t.id === room.currentTableId,
+    );
+    const isCurrentPlayer =
+      currentTable?.player?.socketId === socket.id;
+
+    if (!isCurrentPlayer) {
+      io.to(socket.id).emit(
+        SocketEvents.AnyError,
+        "Закончить ход может только тот, чей сейчас ход",
+      );
+      return;
+    }
+
+    const nextTableId = getNextTableId(room);
+
+    if (nextTableId === undefined) {
+      room.state = GameStates.Idle;
+      room.currentTableId = undefined;
+    } else {
+      room.currentTableId = nextTableId;
+    }
+
+    io.to(room.roomCode).emit(SocketEvents.RoomUpdated, room);
+  });
+
   socket.on(SocketEvents.RestartGame, (roomCode) => {
     const room = roomService.rooms.get(roomCode);
 

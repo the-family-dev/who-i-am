@@ -20,6 +20,7 @@ export enum SocketEvents {
   MakeGuess = "make-guess",
   WordGuessed = "word-guessed",
   NextTurn = "next-turn",
+  FinishTurn = "finish-turn",
   RestartGame = "restart-game",
 
   KickUser = "kick-user",
@@ -132,6 +133,7 @@ export type ClientToServerEvents = {
     guess: string;
   }) => void;
   [SocketEvents.NextTurn]: (roomCode: string) => void;
+  [SocketEvents.FinishTurn]: (roomCode: string) => void;
   [SocketEvents.RestartGame]: (roomCode: string) => void;
   [SocketEvents.KickUser]: ({
     roomCode,

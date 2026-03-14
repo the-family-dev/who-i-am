@@ -415,6 +415,13 @@ class Store {
     socket.emit(SocketEvents.NextTurn, this.room.roomCode);
   }
 
+  /** Закончить свой ход (может вызвать только игрок, чей сейчас ход). */
+  public finishMyTurn() {
+    if (this.room === undefined) return;
+
+    socket.emit(SocketEvents.FinishTurn, this.room.roomCode);
+  }
+
   public restartGame() {
     if (this.room === undefined) return;
 
