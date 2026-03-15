@@ -45,8 +45,6 @@ class Store {
 
   room: TRoom | undefined = undefined;
 
-  // user: TUser | undefined = undefined;
-
   fromPath: string | undefined = undefined;
 
   router: ReturnType<typeof useRouter> | undefined = undefined;
@@ -259,17 +257,12 @@ class Store {
     }
   }
 
-  // public setUser(user: TUser) {
-  //   this.user = user;
-  // }
-
   public leaveRoom() {
     if (this.room === undefined) return;
 
     socket.emit(SocketEvents.LeaveRoom, this.room.roomCode);
 
     this.room = undefined;
-    // this.user = undefined;
     this.chat = this._getChatDefaultState();
 
     this.router?.push("/");
