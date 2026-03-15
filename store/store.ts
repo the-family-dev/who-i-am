@@ -8,7 +8,7 @@ import {
   TUser,
 } from "@/server/types";
 import { socket } from "@/lib/socket";
-import { TypedStorage } from "../utils/storage";
+import { TypedStorage } from "@/utils/storage";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "@heroui/react";
 
